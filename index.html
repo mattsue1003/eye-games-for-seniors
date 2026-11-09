@@ -4,183 +4,239 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>護眼同樂會</title>
-<meta name="description" content="給團體長者一起玩的視力互動遊戲：找不一樣的字、說出顏色、缺口比一比、方格表檢查、看出去的樣子、護眼問答、數一數、眼球操。適合老師投影帶領。">
+<meta name="description" content="給團體長者一起玩的視力互動遊戲：分成「視力・護眼」「視知覺」「手眼協調」三類共 12 種玩法，適合老師投影帶領。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@500;700;900&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#FFF8EC; --card:#FFFFFF; --ink:#1B2430; --muted:#5B6573;
-  --brand:#0E7C7B; --brand-dark:#0A5C5B; --accent:#F59E0B; --accent-dark:#B45309;
-  --ok:#15803D; --bad:#DC2626; --line:#E5DCC9;
-  --radius:18px; --shadow:0 6px 20px rgba(60,40,0,.10);
-  --head-h:64px;
+  --bg:#FFFFFF; --paper:#FFFDF6; --ink:#111111; --grey:#393C40; --muted:#6B7078;
+  --yellow:#F6ED00; --yellow-soft:#FFF9B8; --orange:#F15A29; --green:#17B169; --blue:#2F6FED; --red:#E5322D;
+  --line:#111; --b2:2px solid var(--line); --b3:3px solid var(--line);
+  --sh3:3px 3px 0 var(--line); --sh5:5px 5px 0 var(--line); --sh7:7px 7px 0 var(--line);
+  --radius:14px; --head-h:64px;
   /* 舞台實際可用高度，由 JS 量測後寫入（此為預設值） */
   --stage-h:calc(100dvh - 130px);
 }
 *{box-sizing:border-box}
 html,body{margin:0;height:100%;overflow-x:hidden}
 body{
-  font-family:"PingFang TC","Noto Sans TC","Microsoft JhengHei","Heiti TC",system-ui,-apple-system,sans-serif;
-  background:var(--bg); color:var(--ink); font-size:20px; line-height:1.45;
+  font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei","Heiti TC",system-ui,sans-serif;
+  background:var(--bg); color:var(--ink); font-size:20px; line-height:1.5; font-weight:500;
   display:flex; flex-direction:column; min-height:100dvh;
 }
-button{font:inherit; cursor:pointer; touch-action:manipulation; border:none; border-radius:14px;}
-button:focus-visible{outline:4px solid var(--accent); outline-offset:2px}
+button{font:inherit; cursor:pointer; touch-action:manipulation; border:none; border-radius:999px; color:var(--ink)}
+button:focus-visible{outline:4px solid var(--orange); outline-offset:3px}
 .hidden{display:none !important}
+.mark{background:linear-gradient(transparent 55%, var(--yellow) 55%, var(--yellow) 92%, transparent 92%)}
 
 /* ---------- header ---------- */
 header{
-  min-height:var(--head-h); display:flex; flex-wrap:wrap; align-items:center; gap:6px 10px; padding:6px 14px;
-  background:var(--brand); color:#fff; position:sticky; top:0; z-index:20;
+  min-height:var(--head-h); display:flex; flex-wrap:wrap; align-items:center; gap:6px 12px; padding:8px 16px;
+  background:#fff; color:var(--ink); position:sticky; top:0; z-index:20; border-bottom:var(--b3);
 }
+header .title{font-weight:900; font-size:24px; letter-spacing:1px; display:flex; align-items:center; gap:10px; min-width:0}
+header .logo{width:38px; height:38px; border:var(--b2); border-radius:10px; background:var(--yellow); display:grid; place-items:center; font-size:22px; box-shadow:var(--sh3); flex:none}
+header .title span.mode{font-weight:700; font-size:19px; color:var(--grey); white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
 header .btns{display:flex; gap:8px; align-items:center; margin-left:auto}
-header .title{font-weight:800; font-size:24px; letter-spacing:1px; display:flex; align-items:center; gap:8px; min-width:0}
-header .title span.mode{font-weight:600; font-size:20px; opacity:.95; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
-header .spacer{flex:1}
-.hbtn{background:rgba(255,255,255,.16); color:#fff; padding:8px 14px; font-size:18px; font-weight:700; border-radius:12px; white-space:nowrap}
-.hbtn:hover{background:rgba(255,255,255,.28)}
-.hbtn.active{background:#fff; color:var(--brand)}
+.hbtn{display:inline-flex; align-items:center; gap:6px; background:#fff; color:var(--ink); padding:7px 14px; font-size:17px; font-weight:700; border:var(--b2); box-shadow:var(--sh3); white-space:nowrap; transition:transform .08s, box-shadow .08s}
+.hbtn:hover{transform:translate(-1px,-1px); box-shadow:4px 4px 0 var(--line)}
+.hbtn:active{transform:translate(2px,2px); box-shadow:1px 1px 0 var(--line)}
+.hbtn.active{background:var(--yellow)}
+.ic{width:1.25em; height:1.25em; display:inline-block; vertical-align:-0.25em; flex:none}
+header .logo .ic{width:26px; height:26px}
+
+/* 選項（在標題列內） */
+#optbar{display:flex; flex-wrap:wrap; gap:6px 14px; align-items:center; font-size:16px; margin-left:6px}
+#optbar:empty{display:none}
+.opt{display:flex; align-items:center; gap:6px}
+.opt .lbl{color:var(--grey); font-weight:700; white-space:nowrap}
+.seg{display:inline-flex; background:#fff; border:var(--b2); border-radius:999px; padding:2px}
+.seg button{padding:4px 12px; border-radius:999px; font-size:16px; font-weight:700; color:var(--grey); background:transparent; white-space:nowrap}
+.seg button.on{background:var(--yellow); color:var(--ink); box-shadow:inset 0 0 0 2px var(--line)}
 
 /* ---------- home ---------- */
 main{flex:1; display:flex; flex-direction:column; min-height:0}
-#home{padding:22px 18px 40px; max-width:1200px; margin:0 auto; width:100%}
-.hero{display:flex; flex-wrap:wrap; align-items:center; gap:16px; margin-bottom:18px}
-.hero h1{margin:0; font-size:clamp(28px,4vw,44px); color:var(--brand-dark)}
-.hero p{margin:4px 0 0; color:var(--muted); font-size:20px}
-.tiles{display:grid; grid-template-columns:repeat(auto-fill,minmax(250px,1fr)); gap:16px}
+#home{padding:26px 20px 60px; max-width:1240px; margin:0 auto; width:100%}
+.hero{margin-bottom:26px; display:flex; flex-wrap:wrap; align-items:flex-end; gap:18px 30px}
+.hero h1{margin:0; font-size:clamp(30px,4.4vw,52px); font-weight:900; line-height:1.2; letter-spacing:1px}
+.hero p{margin:8px 0 0; color:var(--grey); font-size:clamp(18px,1.6vw,21px); max-width:720px}
+.hero .pill{display:inline-flex; align-items:center; gap:8px; border:var(--b2); border-radius:999px; padding:6px 16px; font-weight:900; background:var(--yellow); box-shadow:var(--sh3); font-size:17px}
+.cat{margin:30px 0 14px; display:flex; flex-wrap:wrap; align-items:baseline; gap:8px 16px}
+.cat h2{margin:0; font-size:clamp(24px,2.8vw,34px); font-weight:900; display:flex; align-items:center; gap:12px}
+.cat h2 .tag{display:inline-grid; place-items:center; min-width:44px; height:44px; padding:0 12px; border:var(--b2); border-radius:12px; font-size:20px; box-shadow:var(--sh3); color:#fff}
+.cat p{margin:0; color:var(--grey); font-size:18px}
+.tiles{display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:18px}
 .tile{
-  background:var(--card); border-radius:var(--radius); box-shadow:var(--shadow); padding:20px 18px;
-  text-align:left; display:flex; gap:14px; align-items:flex-start; border:3px solid transparent; min-height:120px
+  background:#fff; border:var(--b3); border-radius:var(--radius); box-shadow:var(--sh5); padding:18px 18px 18px 16px;
+  text-align:left; display:flex; gap:14px; align-items:flex-start; min-height:124px; transition:transform .1s, box-shadow .1s; font-weight:500
 }
-.tile:hover{border-color:var(--accent); transform:translateY(-2px)}
-.tile .ico{font-size:44px; line-height:1; width:56px; text-align:center; flex:none}
-.tile b{display:block; font-size:24px; color:var(--brand-dark); margin-bottom:4px}
-.tile small{display:block; font-size:17px; color:var(--muted); line-height:1.4}
-.howto{margin-top:26px; background:#FFF1D6; border-radius:var(--radius); padding:18px 22px; font-size:19px}
-.howto h2{margin:0 0 8px; font-size:22px; color:var(--accent-dark)}
+.tile:hover{transform:translate(-3px,-3px); box-shadow:8px 8px 0 var(--line)}
+.tile:active{transform:translate(2px,2px); box-shadow:2px 2px 0 var(--line)}
+.tile .ico{width:56px; height:56px; border:var(--b2); border-radius:12px; display:grid; place-items:center; flex:none; background:var(--yellow); color:#fff}
+.tile .ico .ic{width:34px; height:34px}
+.tile b{display:block; font-size:23px; font-weight:900; margin-bottom:4px; line-height:1.25}
+.tile small{display:block; font-size:16.5px; color:var(--grey); line-height:1.45}
+.c-eye .tile .ico,.c-eye .tag{background:var(--orange)} .c-eye .tag{color:#fff}
+.c-per .tile .ico,.c-per .tag{background:var(--blue)} .c-per .tag{color:#fff}
+.c-hand .tile .ico,.c-hand .tag{background:var(--green)} .c-hand .tag{color:#fff}
+.howto{margin-top:34px; background:var(--yellow-soft); border:var(--b3); border-radius:var(--radius); box-shadow:var(--sh5); padding:20px 24px; font-size:18.5px}
+.howto h2{margin:0 0 8px; font-size:24px; font-weight:900}
 .howto ul{margin:0; padding-left:1.2em}
-.howto li{margin:4px 0}
-.kbd{display:inline-block; background:#fff; border:1px solid #d8c9a6; border-bottom-width:3px; border-radius:6px; padding:0 8px; font-weight:700; font-size:17px}
+.howto li{margin:5px 0}
+.kbd{display:inline-block; background:#fff; border:var(--b2); border-bottom-width:4px; border-radius:7px; padding:0 8px; font-weight:900; font-size:16px}
 
 /* ---------- game view ---------- */
 #game{flex:1; display:flex; flex-direction:column; min-height:0}
-#optbar{display:flex; flex-wrap:wrap; gap:6px 14px; align-items:center; font-size:16px; margin-left:8px}
-#optbar:empty{display:none}
-header .opt .lbl{color:rgba(255,255,255,.85)}
-header .seg{background:rgba(255,255,255,.14); border:none}
-header .seg button{color:rgba(255,255,255,.9); font-size:16px; padding:4px 10px}
-header .seg button.on{background:#fff; color:var(--brand)}
-.opt{display:flex; align-items:center; gap:6px}
-.opt .lbl{color:var(--muted); font-weight:700; white-space:nowrap}
-.seg{display:inline-flex; background:#fff; border-radius:12px; padding:3px; border:1px solid var(--line)}
-.seg button{padding:5px 12px; border-radius:9px; font-size:17px; font-weight:700; color:var(--muted); background:transparent; white-space:nowrap}
-.seg button.on{background:var(--brand); color:#fff}
-#stage{flex:1; position:relative; display:flex; flex-direction:column; align-items:center; padding:10px 18px; min-height:0; overflow:auto}
+#stage{
+  flex:1; position:relative; display:flex; flex-direction:column; align-items:center; padding:10px 18px; min-height:0; overflow:auto;
+  background:var(--paper) radial-gradient(circle, rgba(17,17,17,.10) 1.3px, transparent 1.5px) 0 0/22px 22px;
+}
 #stage > :first-child{margin-top:auto}
 #stage > :last-child{margin-bottom:auto}
-.prompt{font-size:clamp(20px,2.6vw,34px); font-weight:800; color:var(--brand-dark); text-align:center; margin:0 0 10px; line-height:1.3}
-.prompt small{display:block; font-size:.6em; font-weight:600; color:var(--muted); margin-top:4px}
+.prompt{font-size:clamp(20px,2.6vw,34px); font-weight:900; text-align:center; margin:0 0 10px; line-height:1.3; letter-spacing:.5px}
+.prompt small{display:block; font-size:.6em; font-weight:700; color:var(--grey); margin-top:4px}
 .answer{
-  margin-top:14px; background:#E6F7F5; border:3px solid var(--brand); color:var(--brand-dark); border-radius:16px;
-  padding:10px 22px; font-size:clamp(20px,2.4vw,30px); font-weight:800; text-align:center; max-width:1100px; animation:pop .35s ease; line-height:1.3
+  margin-top:14px; background:var(--yellow); border:var(--b3); box-shadow:var(--sh5); border-radius:16px;
+  padding:10px 24px; font-size:clamp(20px,2.4vw,30px); font-weight:900; text-align:center; max-width:1100px; animation:pop .3s ease; line-height:1.3
 }
-.answer .exp{display:block; font-size:.62em; font-weight:600; color:var(--ink); margin-top:6px; line-height:1.4}
-@keyframes pop{from{transform:scale(.85); opacity:0} to{transform:none; opacity:1}}
-@keyframes blink{0%,100%{box-shadow:0 0 0 6px var(--bad)} 50%{box-shadow:0 0 0 14px rgba(220,38,38,.35)}}
+.answer .exp{display:block; font-size:.62em; font-weight:700; color:var(--grey); margin-top:6px; line-height:1.45}
+@keyframes pop{from{transform:scale(.9); opacity:0} to{transform:none; opacity:1}}
+@keyframes blink{0%,100%{box-shadow:0 0 0 5px var(--orange), var(--sh3)} 50%{box-shadow:0 0 0 12px rgba(241,90,41,.35), var(--sh3)}}
+@keyframes shake{0%,100%{transform:translate(-50%,-50%) translateX(0)} 25%{transform:translate(-50%,-50%) translateX(-8px)} 75%{transform:translate(-50%,-50%) translateX(8px)}}
 @media (prefers-reduced-motion:reduce){*{animation:none !important; transition:none !important}}
 
-/* bottom control bar */
-#ctrl{display:flex; flex-wrap:wrap; gap:8px; justify-content:center; align-items:center; padding:6px 10px 8px; background:#fff; border-top:2px solid var(--line); position:sticky; bottom:0; z-index:15}
-.cbtn{padding:8px 18px; font-size:18px; font-weight:800; border-radius:12px; background:#EEE8DA; color:var(--ink)}
-.cbtn.primary{background:var(--accent); color:#1b1b1b}
-.cbtn.primary:hover{background:#FBBF24}
-.cbtn.brand{background:var(--brand); color:#fff}
-.cbtn.brand:hover{background:var(--brand-dark)}
-.cbtn:disabled{opacity:.4; cursor:default}
-#qnum{font-weight:700; color:var(--muted); font-size:16px; min-width:60px; text-align:center}
+/* 底部控制列 */
+#ctrl{display:flex; flex-wrap:wrap; gap:8px; justify-content:center; align-items:center; padding:7px 10px 9px; background:#fff; border-top:var(--b3); position:sticky; bottom:0; z-index:15}
+.cbtn{padding:8px 20px; font-size:18px; font-weight:900; border:var(--b2); box-shadow:var(--sh3); background:#fff; color:var(--ink); transition:transform .08s, box-shadow .08s}
+.cbtn:hover{transform:translate(-1px,-1px); box-shadow:4px 4px 0 var(--line)}
+.cbtn:active{transform:translate(2px,2px); box-shadow:1px 1px 0 var(--line)}
+.cbtn.primary{background:var(--yellow)}
+.cbtn.brand{background:var(--ink); color:#fff}
+.cbtn:disabled{opacity:.35; cursor:default; transform:none; box-shadow:var(--sh3)}
+#qnum{font-weight:700; color:var(--grey); font-size:16px; min-width:60px; text-align:center}
 
-/* timer overlay */
-#timer{position:fixed; right:18px; top:calc(var(--head-h) + 12px); z-index:18; background:#1B2430; color:#fff; font-weight:900; font-size:56px; line-height:1; padding:10px 22px; border-radius:18px; box-shadow:var(--shadow); min-width:110px; text-align:center}
-#timer.warn{background:var(--bad)}
+/* 倒數 */
+#timer{position:fixed; right:18px; top:calc(var(--head-h) + 14px); z-index:18; background:var(--ink); color:var(--yellow); font-weight:900; font-size:56px; line-height:1; padding:10px 22px; border-radius:16px; border:var(--b3); box-shadow:var(--sh5); min-width:120px; text-align:center}
+#timer.warn{background:var(--orange); color:#fff}
 
-/* ---------- team panel ---------- */
-#teams{position:fixed; left:0; right:0; bottom:0; z-index:30; background:#fff; border-top:4px solid var(--brand); box-shadow:0 -8px 30px rgba(0,0,0,.18); padding:12px 16px 16px; transform:translateY(110%); transition:transform .25s}
+/* ---------- 計分板 ---------- */
+#teams{position:fixed; left:0; right:0; bottom:0; z-index:30; background:#fff; border-top:var(--b3); box-shadow:0 -8px 0 rgba(17,17,17,.08); padding:12px 16px 16px; transform:translateY(110%); transition:transform .25s}
 #teams.open{transform:none}
 #teams .row{display:flex; align-items:center; gap:14px; flex-wrap:wrap; margin-bottom:10px}
-#teams h3{margin:0; font-size:22px; color:var(--brand-dark)}
-.tgrid{display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:12px}
-.team{background:#FFF4DF; border-radius:16px; padding:10px; text-align:center}
-.team .tn{font-weight:800; font-size:20px; color:var(--accent-dark); border:none; background:transparent; text-align:center; width:100%; font-family:inherit}
-.team .sc{font-size:48px; font-weight:900; line-height:1.1; color:var(--ink)}
+#teams h3{margin:0; font-size:22px; font-weight:900}
+.tgrid{display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:14px}
+.team{background:var(--yellow-soft); border:var(--b2); border-radius:14px; padding:10px; text-align:center; box-shadow:var(--sh3)}
+.team .tn{font-weight:900; font-size:19px; border:none; background:transparent; text-align:center; width:100%; font-family:inherit; color:var(--grey)}
+.team .sc{font-size:48px; font-weight:900; line-height:1.1}
 .team .bt{display:flex; gap:8px; justify-content:center; margin-top:6px}
-.team .bt button{width:56px; height:48px; font-size:26px; font-weight:900; border-radius:12px; background:var(--brand); color:#fff}
-.team .bt button.minus{background:#CBD5E1; color:var(--ink)}
-.small{padding:8px 14px; font-size:17px; font-weight:700; background:#EEE8DA; border-radius:10px}
+.team .bt button{width:56px; height:46px; font-size:26px; font-weight:900; border-radius:12px; background:var(--ink); color:#fff; border:var(--b2)}
+.team .bt button.minus{background:#fff; color:var(--ink)}
+.small{padding:6px 14px; font-size:16px; font-weight:700; background:#fff; border:var(--b2); box-shadow:var(--sh3)}
 
-/* ---------- guide drawer ---------- */
-#guide{position:fixed; top:var(--head-h); right:0; bottom:0; width:min(420px,92vw); background:#FFFDF7; border-left:3px solid var(--accent); box-shadow:-8px 0 30px rgba(0,0,0,.15); z-index:25; padding:18px 20px 30px; overflow:auto; transform:translateX(105%); transition:transform .25s; font-size:19px}
+/* ---------- 老師小抄 ---------- */
+#guide{position:fixed; top:var(--head-h); right:0; bottom:0; width:min(430px,92vw); background:var(--paper); border-left:var(--b3); z-index:25; padding:18px 22px 30px; overflow:auto; transform:translateX(105%); transition:transform .25s; font-size:18.5px}
 #guide.open{transform:none}
-#guide h3{margin:0 0 10px; color:var(--accent-dark); font-size:24px}
+#guide h3{margin:0 0 10px; font-size:23px; font-weight:900}
 #guide ol{padding-left:1.3em; margin:0}
 #guide li{margin:8px 0; line-height:1.5}
-#guide .say{background:#FFF1D6; border-left:5px solid var(--accent); padding:8px 12px; border-radius:8px; margin:6px 0; font-size:18px}
 
 /* ---------- mode: odd ---------- */
-.oddgrid{display:grid; gap:min(1.2vw,12px); width:min(92vw, 900px, calc(var(--stage-h) - 130px)); aspect-ratio:1}
-.oddgrid .cell{position:relative; background:#fff; border-radius:12px; box-shadow:var(--shadow); display:flex; align-items:center; justify-content:center; font-weight:700; line-height:1; min-width:0; user-select:none}
-.oddgrid .cell i{position:absolute; left:6px; top:3px; font-style:normal; font-size:clamp(12px,1.4vw,18px); color:#B7AC95; font-weight:600}
-.oddgrid .cell.hit{animation:blink 1s infinite; background:#FEF2F2; color:var(--bad)}
+.oddgrid{display:grid; gap:min(1.2vw,12px); width:min(92vw, 900px, calc(var(--stage-h) - 150px)); aspect-ratio:1}
+.oddgrid .cell{position:relative; background:#fff; border:var(--b2); border-radius:12px; box-shadow:var(--sh3); display:grid; grid-template-rows:auto 1fr; padding:4% 4% 2%; font-weight:700; line-height:1; min-width:0; user-select:none}
+.oddgrid .cell i{justify-self:start; font-style:normal; font-weight:900; font-size:var(--badge); line-height:1; min-width:1.5em; height:1.5em; padding:0 .25em; display:grid; place-items:center; border:2px solid var(--line); border-radius:999px; background:var(--yellow)}
+.oddgrid .cell span{display:grid; place-items:center; min-height:0}
+.oddgrid .cell.hit{animation:blink 1s infinite; background:var(--orange); color:#fff}
+.oddgrid .cell.hit i{background:#fff; color:var(--ink)}
 
 /* ---------- mode: stroop ---------- */
 .words{display:flex; flex-wrap:wrap; gap:clamp(14px,3vw,40px); justify-content:center; align-items:center}
-.word{font-weight:900; line-height:1; text-shadow:0 2px 0 rgba(0,0,0,.08)}
+.word{font-weight:900; line-height:1}
 .words.n1 .word{font-size:min(40vw,calc((var(--stage-h) - 130px) * .85))}
 .words.n2 .word{font-size:min(26vw,calc((var(--stage-h) - 130px) * .7))}
 .words.n4 .word{font-size:min(17vw,calc((var(--stage-h) - 130px) * .55))}
 .words.n6 .word{font-size:min(13vw,calc((var(--stage-h) - 130px) * .45))}
-.autobar{position:absolute; left:0; right:0; bottom:0; height:10px; background:#eee}
-.autobar i{display:block; height:100%; background:var(--accent); width:0}
+.autobar{position:absolute; left:0; right:0; bottom:0; height:10px; background:#fff; border-top:var(--b2)}
+.autobar i{display:block; height:100%; background:var(--orange); width:0}
 
 /* ---------- mode: gap ---------- */
 .gapwrap{display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px; width:100%}
 .gapwrap svg{display:block}
-.gaplvl{font-size:20px; color:var(--muted); font-weight:700}
+.gaplvl{font-size:18px; color:var(--grey); font-weight:700}
 .arrowbig{font-size:1.6em; line-height:1; vertical-align:middle; margin-right:10px}
 
 /* ---------- mode: amsler ---------- */
 .amwrap{display:flex; flex-wrap:wrap; gap:22px; align-items:center; justify-content:center; width:100%}
-.amwrap svg{width:min(88vw,calc(var(--stage-h) - 150px)); height:min(88vw,calc(var(--stage-h) - 150px)); background:#fff; border-radius:8px; box-shadow:var(--shadow)}
-.steps{max-width:460px; font-size:clamp(18px,2.2vw,26px)}
+.amwrap svg{width:min(88vw,calc(var(--stage-h) - 230px)); height:min(88vw,calc(var(--stage-h) - 230px)); background:#fff; border:var(--b3); box-shadow:var(--sh5)}
+.steps{max-width:460px; font-size:clamp(18px,2.2vw,26px); font-weight:700}
 .steps ol{padding-left:1.3em; margin:0}
 .steps li{margin:6px 0}
 .choices{display:flex; flex-wrap:wrap; gap:12px; justify-content:center; margin-top:14px}
-.choices button{padding:12px 22px; font-size:clamp(18px,2.4vw,26px); font-weight:800; background:#fff; border:3px solid var(--line); border-radius:16px; color:var(--ink)}
-.choices button.right{background:#DCFCE7; border-color:var(--ok); color:var(--ok)}
-.choices button.dim{opacity:.4}
+.choices button{padding:10px 22px; font-size:clamp(18px,2.4vw,26px); font-weight:900; background:#fff; border:var(--b2); box-shadow:var(--sh3); border-radius:999px; transition:transform .08s, box-shadow .08s}
+.choices button:hover{transform:translate(-1px,-1px); box-shadow:4px 4px 0 var(--line)}
+.choices button.right{background:var(--green); color:#fff}
+.choices button.dim{opacity:.35}
 
 /* ---------- mode: disease ---------- */
-.scenewrap{position:relative; width:min(94vw,1100px,calc((var(--stage-h) - 160px) * 1.6)); aspect-ratio:8/5; border-radius:18px; overflow:hidden; box-shadow:var(--shadow); background:#000}
+.scenewrap{position:relative; width:min(94vw,1100px,calc((var(--stage-h) - 250px) * 1.6)); aspect-ratio:8/5; border-radius:16px; overflow:hidden; border:var(--b3); box-shadow:var(--sh5); background:#000}
 .scenewrap svg{position:absolute; inset:0; width:100%; height:100%}
 .scenewrap .ov{position:absolute; inset:0; pointer-events:none}
 
 /* ---------- mode: count ---------- */
-.field{position:relative; width:min(94vw,1100px,calc((var(--stage-h) - 150px) * 1.5)); aspect-ratio:3/2; background:#fff; border-radius:18px; box-shadow:var(--shadow); overflow:hidden}
+.field{position:relative; width:min(94vw,1100px,calc((var(--stage-h) - 150px) * 1.5)); aspect-ratio:3/2; background:#fff; border:var(--b3); box-shadow:var(--sh5); border-radius:16px; overflow:hidden}
 .field .sh{position:absolute; width:9%; aspect-ratio:1; display:flex; align-items:center; justify-content:center}
 .field .sh svg{width:100%; height:100%; overflow:visible}
-.field .sh.hit svg{filter:drop-shadow(0 0 0 #000)}
-.field .sh.hit::after{content:""; position:absolute; inset:-14%; border:5px solid var(--bad); border-radius:50%; animation:blink 1s infinite}
-.field.dimothers .sh:not(.hit){opacity:.18}
+.field .sh.hit::after{content:""; position:absolute; inset:-14%; border:5px solid var(--orange); border-radius:50%; animation:blink 1s infinite}
+.field.dimothers .sh:not(.hit){opacity:.15}
+
+/* ---------- mode: illusion ---------- */
+.illu{width:min(94vw,1000px,calc((var(--stage-h) - 280px) * 1.7)); aspect-ratio:17/10; background:#fff; border:var(--b3); box-shadow:var(--sh5); border-radius:16px; overflow:hidden}
+.illu svg{width:100%; height:100%; display:block}
+.illu .guide{opacity:0; transition:opacity .4s}
+.illu.revealed .guide{opacity:1}
+.illu.revealed .fade{opacity:.12; transition:opacity .4s}
+
+/* ---------- mode: cups ---------- */
+.cupsarea{position:relative; width:min(94vw,1000px); height:min(46vh, calc(var(--stage-h) - 190px)); min-height:180px}
+.cup{position:absolute; top:0; width:var(--cw); height:100%; transition:left var(--spd) ease-in-out; display:flex; flex-direction:column; align-items:center; justify-content:flex-end}
+.cup svg{height:62%; width:auto; max-width:86%; display:block; position:relative; z-index:2; transition:transform .5s ease}
+.cup.lift svg{transform:translateY(-55%)}
+.slotnum{position:absolute; bottom:-6px; width:var(--cw); text-align:center; font-weight:900; font-size:clamp(20px,3vw,34px)}
+.ball{position:absolute; bottom:3%; left:50%; width:30%; aspect-ratio:1; border-radius:50%; background:var(--yellow); border:var(--b2); transform:translateX(-50%); z-index:1}
+.cups-msg{font-size:clamp(20px,2.6vw,30px); font-weight:900; text-align:center; margin-top:12px; min-height:1.4em}
+.bigbtn{padding:14px 34px; font-size:clamp(20px,2.6vw,28px); font-weight:900; background:var(--yellow); border:var(--b3); box-shadow:var(--sh5); border-radius:999px; margin-top:8px}
+.bigbtn:active{transform:translate(3px,3px); box-shadow:2px 2px 0 var(--line)}
+
+/* ---------- mode: bubbles ---------- */
+.arena{position:relative; flex:1; width:100%; min-height:40vh}
+.bubblearena{position:relative; width:min(96vw,1200px); height:calc(var(--stage-h) - 120px); min-height:240px; background:#fff; border:var(--b3); box-shadow:var(--sh5); border-radius:16px; overflow:hidden; touch-action:manipulation}
+.bubble{position:absolute; width:var(--bs); height:var(--bs); border-radius:50%; border:var(--b3); background:radial-gradient(circle at 35% 30%, #fff 0 12%, var(--blue) 13%); display:grid; place-items:center; font-size:calc(var(--bs) * .5); cursor:pointer; animation:pop .25s ease; user-select:none; box-shadow:var(--sh3)}
+.bubble.gold{background:radial-gradient(circle at 35% 30%, #fff 0 12%, var(--yellow) 13%)}
+.bubble.popping{animation:popout .25s ease forwards; pointer-events:none}
+@keyframes popout{to{transform:scale(1.6); opacity:0}}
+.hud{display:flex; gap:18px; justify-content:center; align-items:center; font-weight:900; font-size:clamp(20px,2.6vw,30px); margin-bottom:8px; flex-wrap:wrap}
+.hud span{border:var(--b2); border-radius:999px; padding:4px 18px; background:#fff; box-shadow:var(--sh3)}
+.hud span.time{background:var(--yellow)}
+
+/* ---------- mode: trail ---------- */
+.trailarena{position:relative; width:min(96vw,1200px); height:calc(var(--stage-h) - 120px); min-height:240px; background:#fff; border:var(--b3); box-shadow:var(--sh5); border-radius:16px; overflow:hidden; touch-action:manipulation}
+.trailarena svg{position:absolute; inset:0; width:100%; height:100%; pointer-events:none}
+.node{position:absolute; width:var(--ns); height:var(--ns); border-radius:50%; border:var(--b3); background:#fff; display:grid; place-items:center; font-weight:900; font-size:calc(var(--ns) * .46); cursor:pointer; transform:translate(-50%,-50%); user-select:none; box-shadow:var(--sh3)}
+.node.done{background:var(--green); color:#fff}
+.node.next{background:var(--yellow)}
+.node.wrong{animation:shake .3s; background:var(--red); color:#fff}
 
 /* ---------- mode: exercise ---------- */
 .exwrap{position:relative; width:100%; height:100%; min-height:60vh; display:flex; flex-direction:column; align-items:center}
 .exhead{text-align:center; margin-top:4px}
-.exhead .stepname{font-size:clamp(26px,4vw,48px); font-weight:900; color:var(--brand-dark)}
-.exhead .inst{font-size:clamp(20px,2.6vw,32px); color:var(--ink); margin-top:2px}
-.exhead .cnt{font-size:clamp(20px,2.6vw,30px); color:var(--accent-dark); font-weight:800; margin-top:2px; min-height:1.4em}
-.arena{position:relative; flex:1; width:100%; min-height:40vh}
-.ball{position:absolute; left:50%; top:50%; width:11vh; height:11vh; border-radius:50%; background:radial-gradient(circle at 35% 35%, #FDE68A, #F59E0B 60%, #B45309); box-shadow:0 8px 20px rgba(0,0,0,.25); transform:translate(-50%,-50%); display:flex; align-items:center; justify-content:center; font-size:4vh; font-weight:900; color:#5A2E00}
+.exhead .stepname{font-size:clamp(26px,4vw,48px); font-weight:900}
+.exhead .inst{font-size:clamp(20px,2.6vw,32px); margin-top:2px; font-weight:700}
+.exhead .cnt{font-size:clamp(20px,2.6vw,30px); color:var(--orange); font-weight:900; margin-top:2px; min-height:1.4em}
+.exball{position:absolute; left:50%; top:50%; width:11vh; height:11vh; border-radius:50%; background:var(--yellow); border:var(--b3); box-shadow:var(--sh5); transform:translate(-50%,-50%); display:flex; align-items:center; justify-content:center; font-size:4vh; font-weight:900}
 .exsteps{display:flex; flex-wrap:wrap; gap:8px; justify-content:center; margin:6px 0}
-.exsteps button{padding:8px 14px; font-size:17px; font-weight:700; background:#fff; border:2px solid var(--line); border-radius:12px; color:var(--muted)}
-.exsteps button.on{background:var(--brand); color:#fff; border-color:var(--brand)}
-.warn{color:var(--bad); font-weight:700; font-size:18px; text-align:center}
+.exsteps button{padding:6px 14px; font-size:16px; font-weight:700; background:#fff; border:var(--b2); color:var(--grey)}
+.exsteps button.on{background:var(--yellow); color:var(--ink)}
+.warn{color:var(--red); font-weight:900; font-size:18px; text-align:center}
 
 /* ---------- responsive ---------- */
 @media (max-width:980px){
@@ -190,7 +246,7 @@ header .seg button.on{background:#fff; color:var(--brand)}
   body{font-size:18px}
   header .title{font-size:19px; white-space:nowrap}
   header .title span.mode{display:none}
-  .hbtn{padding:7px 9px; font-size:18px}
+  .hbtn{padding:6px 9px; font-size:17px}
   .hbtn .t{display:none}
   .cbtn{padding:8px 12px; font-size:17px}
   #timer{font-size:40px; padding:8px 14px}
@@ -206,14 +262,14 @@ header .seg button.on{background:#fff; color:var(--brand)}
 <body>
 
 <header>
-  <div class="title">👁️ 護眼同樂會 <span class="mode" id="modeName"></span></div>
+  <div class="title"><span class="logo" data-ico="eye"></span><span>護眼同樂會</span><span class="mode" id="modeName"></span></div>
   <div id="optbar"></div>
   <div class="btns">
-  <button class="hbtn" id="btnHome" aria-label="首頁">🏠<span class="t"> 首頁</span></button>
-  <button class="hbtn" id="btnTeams" aria-label="計分">🏆<span class="t"> 計分</span></button>
-  <button class="hbtn" id="btnTimer" aria-label="倒數">⏱<span class="t"> 倒數</span></button>
-  <button class="hbtn" id="btnGuide" aria-label="老師小抄">📋<span class="t"> 老師小抄</span></button>
-  <button class="hbtn" id="btnFull" title="全螢幕">⛶</button>
+  <button class="hbtn" id="btnHome" aria-label="首頁" data-ico="home"><span class="t">首頁</span></button>
+  <button class="hbtn" id="btnTeams" aria-label="計分" data-ico="trophy"><span class="t">計分</span></button>
+  <button class="hbtn" id="btnTimer" aria-label="倒數" data-ico="timer"><span class="t">倒數</span></button>
+  <button class="hbtn" id="btnGuide" aria-label="老師小抄" data-ico="clip"><span class="t">老師小抄</span></button>
+  <button class="hbtn" id="btnFull" title="全螢幕" aria-label="全螢幕" data-ico="full"></button>
   </div>
 </header>
 
@@ -222,17 +278,18 @@ header .seg button.on{background:#fff; color:var(--brand)}
   <section id="home">
     <div class="hero">
       <div>
-        <h1>眼睛顧好不吃虧，一起來玩護眼遊戲！</h1>
-        <p>老師把畫面投影出來，阿公阿嬤一起看、一起喊答案。選一個玩法開始吧。</p>
+        <span class="pill">阿公阿嬤一起玩</span>
+        <h1 style="margin-top:12px">眼睛顧好不吃虧，<br>一起來玩<span class="mark">護眼遊戲</span>！</h1>
+        <p>老師把畫面投影出來，大家一起看、一起喊答案。遊戲分成三類：<b>視力・護眼</b>（眼睛本身與眼疾）、<b>視知覺</b>（眼睛看到後大腦怎麼判斷）、<b>手眼協調</b>（看到再動手）。</p>
       </div>
     </div>
-    <div class="tiles" id="tiles"></div>
+    <div id="cats"></div>
     <div class="howto">
       <h2>老師怎麼帶？</h2>
       <ul>
-        <li>點選玩法後，畫面下方有「揭曉答案」與「下一題」兩個大按鈕；鍵盤 <span class="kbd">空白鍵</span> 也可以揭曉／下一題，<span class="kbd">←</span> <span class="kbd">→</span> 切換題目。</li>
-        <li>右上角「🏆 計分」可以分桌計分（2～6 桌），「⏱ 倒數」開啟 10／20／30 秒倒數，「📋 老師小抄」有每個玩法的帶領提示與說法。</li>
-        <li>按 <span class="kbd">⛶</span> 或 <span class="kbd">F</span> 進入全螢幕，投影時字會更大。</li>
+        <li>點選玩法後，畫面下方有「揭曉答案」與「下一題」；鍵盤 <span class="kbd">空白鍵</span> 也可以揭曉／下一題，<span class="kbd">←</span> <span class="kbd">→</span> 切換題目。</li>
+        <li>右上角「計分」分桌計分（2～6 桌）、「倒數」10／20／30 秒倒數、「老師小抄」有每個玩法的帶領提示與說法。</li>
+        <li>按 右上角全螢幕按鈕或 <span class="kbd">F</span> 全螢幕，投影時字會更大。手眼協調類在觸控螢幕或平板上玩最順手，用滑鼠也可以。</li>
         <li>遊戲只是互動體驗，<b>不是正式的視力檢查</b>。看不清楚、直線變彎、閃光或黑影變多，請到眼科檢查。</li>
       </ul>
     </div>
@@ -242,10 +299,10 @@ header .seg button.on{background:#fff; color:var(--brand)}
   <section id="game" class="hidden">
     <div id="stage"></div>
     <div id="ctrl">
-      <button class="cbtn" id="btnPrev">◀ 上一題</button>
+      <button class="cbtn" id="btnPrev">◀︎ 上一題</button>
       <span id="qnum"></span>
       <button class="cbtn primary" id="btnReveal">揭曉答案</button>
-      <button class="cbtn brand" id="btnNext">下一題 ▶</button>
+      <button class="cbtn brand" id="btnNext">下一題 ▶︎</button>
     </div>
   </section>
 </main>
@@ -255,11 +312,11 @@ header .seg button.on{background:#fff; color:var(--brand)}
 <!-- ========== 計分板 ========== -->
 <div id="teams">
   <div class="row">
-    <h3>🏆 分桌計分</h3>
+    <h3>分桌計分</h3>
     <span class="opt"><span class="lbl">桌數</span><span class="seg" id="teamCountSeg"></span></span>
     <button class="small" id="btnResetScore">全部歸零</button>
     <span style="flex:1"></span>
-    <button class="small" id="btnCloseTeams">收起 ▼</button>
+    <button class="small" id="btnCloseTeams">收起 ▼︎</button>
   </div>
   <div class="tgrid" id="tgrid"></div>
 </div>
@@ -278,9 +335,10 @@ const rnd = n => Math.floor(Math.random() * n);
 const pick = a => a[rnd(a.length)];
 const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = rnd(i + 1); [a[i], a[j]] = [a[j], a[i]]; } return a; };
 const el = (tag, cls, html) => { const e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; return e; };
+const sleep = ms => new Promise(r => setTimeout(r, ms));
 
 /* ---------- settings (remembered in this browser) ---------- */
-const DEFAULTS = { odd: { level: 2 }, stroop: { n: 1, auto: 0 }, gap: { type: 'C', dirs: 4 }, amsler: { mode: 'steps' }, disease: {}, quiz: { type: 'all' }, count: { n: 16 }, exercise: { speed: 1 }, teams: 4 };
+const DEFAULTS = { odd: { level: 2 }, stroop: { n: 1, auto: 0 }, gap: { type: 'C', dirs: 4 }, amsler: { mode: 'steps' }, disease: {}, quiz: { type: 'all' }, count: { n: 16 }, exercise: { speed: 1 }, illusion: {}, cups: { n: 3, speed: 1 }, bubbles: { size: 2, dur: 30 }, trail: { n: 10 }, teams: 4 };
 let S;
 try { S = Object.assign({}, DEFAULTS, JSON.parse(localStorage.getItem('eyegame-settings') || '{}')); } catch (e) { S = Object.assign({}, DEFAULTS); }
 for (const k in DEFAULTS) if (typeof DEFAULTS[k] === 'object') S[k] = Object.assign({}, DEFAULTS[k], S[k] || {});
@@ -305,12 +363,12 @@ const ODD_EASY = [['大','犬'],['日','曰'],['人','入'],['王','玉'],['午'
 const ODD_HARD = [['未','末'],['己','已'],['天','夭'],['戊','戌'],['兔','免'],['侯','候'],['壓','厭'],['睛','晴'],['汪','注'],['辛','幸'],['卯','卵'],['折','拆'],['旱','早'],['烏','鳥'],['貝','見'],['土','士'],['刺','剌'],['荼','茶'],['崇','祟'],['籃','藍']];
 
 const COLORS = [
-  { n: '紅', c: '#E11D48' }, { n: '藍', c: '#2563EB' }, { n: '黃', c: '#EAB308' },
-  { n: '綠', c: '#16A34A' }, { n: '黑', c: '#111827' }, { n: '紫', c: '#7C3AED' }
+  { n: '紅', c: '#E5322D' }, { n: '藍', c: '#2F6FED' }, { n: '黃', c: '#E6B800' },
+  { n: '綠', c: '#17B169' }, { n: '黑', c: '#111111' }, { n: '紫', c: '#7C3AED' }
 ];
 
-const DIRS4 = [{ k: 'up', deg: 270, name: '上', arrow: '⬆️', hand: '手指向上' }, { k: 'right', deg: 0, name: '右', arrow: '➡️', hand: '手指向右' }, { k: 'down', deg: 90, name: '下', arrow: '⬇️', hand: '手指向下' }, { k: 'left', deg: 180, name: '左', arrow: '⬅️', hand: '手指向左' }];
-const DIRS8 = DIRS4.concat([{ k: 'ur', deg: 315, name: '右上', arrow: '↗️', hand: '' }, { k: 'dr', deg: 45, name: '右下', arrow: '↘️', hand: '' }, { k: 'dl', deg: 135, name: '左下', arrow: '↙️', hand: '' }, { k: 'ul', deg: 225, name: '左上', arrow: '↖️', hand: '' }]);
+const DIRS4 = [{ k: 'up', deg: 270, name: '上', arrow: '↑' }, { k: 'right', deg: 0, name: '右', arrow: '→' }, { k: 'down', deg: 90, name: '下', arrow: '↓' }, { k: 'left', deg: 180, name: '左', arrow: '←' }];
+const DIRS8 = DIRS4.concat([{ k: 'ur', deg: 315, name: '右上', arrow: '↗' }, { k: 'dr', deg: 45, name: '右下', arrow: '↘' }, { k: 'dl', deg: 135, name: '左下', arrow: '↙' }, { k: 'ul', deg: 225, name: '左上', arrow: '↖' }]);
 
 const AMSLER_TYPES = [
   { k: 'normal', name: '正常', exp: '線條都是直的、格子都在。很好！但每年還是要到眼科散瞳檢查眼底。' },
@@ -353,7 +411,7 @@ const QUIZ = [
 
 const SHAPES = ['circle', 'triangle', 'square', 'star'];
 const SHAPE_NAME = { circle: '圓形', triangle: '三角形', square: '方形', star: '星星' };
-const SHAPE_COLORS = [{ n: '紅色', c: '#E11D48' }, { n: '藍色', c: '#2563EB' }, { n: '黃色', c: '#EAB308' }, { n: '綠色', c: '#16A34A' }];
+const SHAPE_COLORS = [{ n: '紅色', c: '#E5322D' }, { n: '藍色', c: '#2F6FED' }, { n: '黃色', c: '#F6ED00' }, { n: '綠色', c: '#17B169' }];
 
 /* 眼球操步驟 */
 const EX_STEPS = [
@@ -365,16 +423,65 @@ const EX_STEPS = [
   { k: 'blink', name: '⑥ 眨眼放鬆', inst: '閉眼再張開，用力眨眼 10 次，然後閉眼休息', type: 'blink', reps: 10 }
 ];
 
+/* 視錯覺題庫：每題 svg(850×500)，class="guide" 的元素揭曉時才出現、class="fade" 的元素揭曉時淡出 */
+const ILLUSIONS = [
+  { name: '繆勒—萊爾錯覺', q: '上面和下面的橫線，哪一條比較長？', o: ['上面', '下面', '一樣長'], a: 2,
+    exp: '兩條線其實一樣長！箭頭往外的看起來比較長、往內的看起來比較短。眼睛看到的，大腦會自己「加工」。',
+    svg: () => `<g stroke="#111" stroke-width="9" stroke-linecap="round" fill="none"><line x1="225" y1="160" x2="625" y2="160"/><polyline points="285,100 225,160 285,220"/><polyline points="565,100 625,160 565,220"/><line x1="225" y1="350" x2="625" y2="350"/><polyline points="165,290 225,350 165,410"/><polyline points="685,290 625,350 685,410"/></g><g class="guide" stroke="#F15A29" stroke-width="5" stroke-dasharray="12 10"><line x1="225" y1="60" x2="225" y2="450"/><line x1="625" y1="60" x2="625" y2="450"/></g>` },
+  { name: '艾賓浩斯錯覺', q: '左邊和右邊中間的橘色圓，哪一個比較大？', o: ['左邊', '右邊', '一樣大'], a: 2,
+    exp: '兩個橘色圓一樣大！旁邊放大圓，中間就顯得小；放小圓，中間就顯得大。所以看東西要注意「旁邊有什麼」。',
+    svg: () => { let s = ''; for (let i = 0; i < 6; i++) { const a = i * Math.PI / 3; s += `<circle class="fade" cx="${(230 + 150 * Math.cos(a)).toFixed(1)}" cy="${(250 + 150 * Math.sin(a)).toFixed(1)}" r="58" fill="#393C40"/>`; } for (let i = 0; i < 8; i++) { const a = i * Math.PI / 4; s += `<circle class="fade" cx="${(620 + 85 * Math.cos(a)).toFixed(1)}" cy="${(250 + 85 * Math.sin(a)).toFixed(1)}" r="18" fill="#393C40"/>`; } return s + `<circle cx="230" cy="250" r="52" fill="#F15A29" stroke="#111" stroke-width="4"/><circle cx="620" cy="250" r="52" fill="#F15A29" stroke="#111" stroke-width="4"/><g class="guide" stroke="#2F6FED" stroke-width="5" stroke-dasharray="12 10" fill="none"><line x1="230" y1="198" x2="620" y2="198"/><line x1="230" y1="302" x2="620" y2="302"/></g>`; } },
+  { name: '龐佐錯覺（鐵軌）', q: '上面和下面的黃色橫條，哪一條比較長？', o: ['上面', '下面', '一樣長'], a: 2,
+    exp: '一樣長！兩條斜線像遠去的鐵軌，大腦以為上面那條「比較遠」，就自動把它想成比較長。',
+    svg: () => `<g stroke="#111" stroke-width="8" stroke-linecap="round"><line x1="300" y1="60" x2="120" y2="470"/><line x1="550" y1="60" x2="730" y2="470"/></g><g fill="#F6ED00" stroke="#111" stroke-width="4"><rect x="315" y="140" width="220" height="30" rx="6"/><rect x="315" y="360" width="220" height="30" rx="6"/></g><g class="guide" stroke="#F15A29" stroke-width="5" stroke-dasharray="12 10"><line x1="315" y1="100" x2="315" y2="430"/><line x1="535" y1="100" x2="535" y2="430"/></g>` },
+  { name: '咖啡牆錯覺', q: '黑白磚塊之間的灰色橫線，是平行的嗎？', o: ['是平行的', '不是，歪歪的'], a: 0,
+    exp: '其實每一條都是水平、互相平行的直線！黑白磚塊交錯排列，讓直線看起來歪斜。揭曉後的橘線就是原本的位置。',
+    svg: () => { let s = '<rect width="850" height="500" fill="#8a8a8a"/>'; const rows = 8, h = 500 / rows, w = 100; for (let r = 0; r < rows; r++) { const off = [0, 25, 50, 25][r % 4]; for (let c = -1; c < 10; c++) { s += `<rect x="${c * w + off}" y="${r * h + 3}" width="${w}" height="${h - 6}" fill="${c % 2 ? '#111' : '#fff'}"/>`; } } for (let r = 1; r < rows; r++) s += `<line class="guide" x1="0" y1="${r * h}" x2="850" y2="${r * h}" stroke="#F15A29" stroke-width="5"/>`; return s; } },
+  { name: '赫曼方格', q: '黑色方塊之間的白色交叉點上，你看到幾個灰點？', o: ['很多個', '一個都沒有'], a: 1,
+    exp: '其實一個都沒有畫！不直接看的交叉點會「閃」出灰點，直接盯著看它就消失。這是眼睛視網膜細胞互相影響的結果。',
+    svg: () => { let s = '<rect width="850" height="500" fill="#fff"/>'; for (let r = 0; r < 5; r++) for (let c = 0; c < 9; c++) s += `<rect x="${30 + c * 90}" y="${18 + r * 96}" width="68" height="72" fill="#111"/>`; return s; } },
+  { name: '同色不同感', q: '左右兩個中間的灰色方塊，哪一個比較亮？', o: ['左邊', '右邊', '一樣亮'], a: 2,
+    exp: '兩塊灰色一模一樣！背景深，灰色就顯得亮；背景淺，灰色就顯得暗。揭曉後的連接條證明是同一個顏色。',
+    svg: () => `<rect x="0" y="0" width="425" height="500" fill="#2b2b2b"/><rect x="425" y="0" width="425" height="500" fill="#e9e9e9"/><rect x="140" y="175" width="150" height="150" fill="#8c8c8c" stroke="#111" stroke-width="3"/><rect x="560" y="175" width="150" height="150" fill="#8c8c8c" stroke="#111" stroke-width="3"/><rect class="guide" x="290" y="225" width="270" height="50" fill="#8c8c8c"/>` },
+  { name: '直橫線錯覺', q: '直的線和橫的線，哪一條比較長？', o: ['直的', '橫的', '一樣長'], a: 2,
+    exp: '一樣長！直立的線通常看起來比橫的長一點，這也是為什麼同樣的東西「立起來」會覺得比較高。',
+    svg: () => `<g stroke="#111" stroke-width="10" stroke-linecap="round"><line x1="275" y1="400" x2="575" y2="400"/><line x1="425" y1="400" x2="425" y2="100"/></g><g class="guide" stroke="#F15A29" stroke-width="5" stroke-dasharray="12 10" fill="none"><path d="M275 430 L275 470 L575 470 L575 430"/><path d="M455 100 L495 100 L495 400 L455 400"/><text x="425" y="492" font-size="22" font-weight="900" text-anchor="middle" fill="#F15A29" stroke="none">300</text><text x="520" y="256" font-size="22" font-weight="900" fill="#F15A29" stroke="none">300</text></g>` }
+];
+
+/* =====================================================================
+   線條圖示（取代 emoji）
+   ===================================================================== */
+const ICONS = {
+  eye: '<path d="M4 24c6-9 12-13 20-13s14 4 20 13c-6 9-12 13-20 13S10 33 4 24z"/><circle cx="24" cy="24" r="6"/>',
+  home: '<path d="M7 24 24 9l17 15"/><path d="M12 21v18h24V21"/><path d="M20 39V29h8v10"/>',
+  trophy: '<path d="M16 8h16v10a8 8 0 0 1-16 0z"/><path d="M16 12H9a6 6 0 0 0 7 7"/><path d="M32 12h7a6 6 0 0 1-7 7"/><path d="M24 26v6M17 40h14M20 32h8v8"/>',
+  timer: '<circle cx="24" cy="27" r="14"/><path d="M24 19v8l5 3M19 6h10M24 6v7"/>',
+  clip: '<rect x="11" y="10" width="26" height="30" rx="3"/><path d="M18 10V7h12v3M17 20h14M17 27h14M17 34h9"/>',
+  full: '<path d="M8 18V8h10M30 8h10v10M40 30v10H30M18 40H8V30"/>',
+  gap: '<path d="M38 17a16 16 0 1 0 0 14"/>',
+  amsler: '<rect x="8" y="8" width="32" height="32"/><path d="M8 18.7h32M8 29.3h32M18.7 8v32M29.3 8v32"/><circle cx="24" cy="24" r="3" fill="currentColor"/>',
+  disease: '<circle cx="15" cy="27" r="8"/><circle cx="33" cy="27" r="8"/><path d="M23 27h2M7 26l-3-9M41 26l3-9"/>',
+  illusion: '<path d="M10 18h24M14 12l-4 6 4 6M30 12l4 6-4 6M14 34h20M10 28l4 6-4 6M38 28l-4 6 4 6"/>',
+  quiz: '<path d="M17 18a7 7 0 1 1 10 6c-2 1-3 2-3 5"/><circle cx="24" cy="37" r="2" fill="currentColor"/>',
+  exercise: '<path d="M4 24c6-9 12-13 20-13s14 4 20 13c-6 9-12 13-20 13S10 33 4 24z"/><circle cx="24" cy="24" r="6"/><path d="M24 6v4M24 38v4"/>',
+  odd: '<circle cx="21" cy="21" r="11"/><path d="M29 29l11 11"/>',
+  stroop: '<path d="M24 8a16 16 0 1 0 6 30c3-1 2-5 5-5h3a4 4 0 0 0 2-7A16 16 0 0 0 24 8z"/><circle cx="16" cy="22" r="2.5" fill="currentColor"/><circle cx="23" cy="15" r="2.5" fill="currentColor"/><circle cx="32" cy="17" r="2.5" fill="currentColor"/>',
+  count: '<circle cx="14" cy="16" r="7"/><path d="M27 23l7-12 7 12z"/><rect x="18" y="29" width="13" height="13"/>',
+  cups: '<path d="M12 12h22l-3 24H15z"/><path d="M9 9h28"/><circle cx="38" cy="40" r="4"/>',
+  bubbles: '<circle cx="18" cy="20" r="11"/><circle cx="34" cy="32" r="8"/><circle cx="33" cy="12" r="4"/><path d="M12 17a7 7 0 0 1 5-5"/>',
+  trail: '<circle cx="12" cy="36" r="5"/><circle cx="24" cy="14" r="5"/><circle cx="37" cy="32" r="5"/><path d="M15 32l6-14M27 18l7 10"/>'
+};
+const icon = id => `<svg class="ic" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONS[id] || ''}</svg>`;
+document.querySelectorAll('[data-ico]').forEach(e => e.insertAdjacentHTML('afterbegin', icon(e.dataset.ico)));
+
 /* =====================================================================
    畫圖工具
    ===================================================================== */
 function landoltSVG(deg, px) {
-  // 標準蘭氏環：外徑 5、筆畫 1、缺口 1
   const r = 2, circ = 2 * Math.PI * r;
   return `<svg viewBox="-3 -3 6 6" width="${px}" height="${px}" aria-label="缺口環"><g transform="rotate(${deg})"><circle cx="0" cy="0" r="${r}" fill="none" stroke="#111" stroke-width="1" stroke-dasharray="${(circ - 1).toFixed(4)} 1" stroke-dashoffset="-0.5"/></g></svg>`;
 }
 function tumblingESVG(deg, px) {
-  // E 開口預設朝右
   return `<svg viewBox="-0.5 -0.5 6 6" width="${px}" height="${px}" aria-label="E 字"><g transform="rotate(${deg} 2.5 2.5)" fill="#111"><rect x="0" y="0" width="1" height="5"/><rect x="0" y="0" width="5" height="1"/><rect x="0" y="2" width="5" height="1"/><rect x="0" y="4" width="5" height="1"/></g></svg>`;
 }
 function amslerSVG(type) {
@@ -404,18 +511,18 @@ function sceneSVG() {
   return `<svg viewBox="0 0 800 500" role="img" aria-label="公園風景">
   <defs><linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7CC4F5"/><stop offset="1" stop-color="#DDF1FF"/></linearGradient></defs>
   <rect width="800" height="500" fill="url(#sky)"/>
-  <circle cx="660" cy="90" r="48" fill="#FFD23F"/>
-  <g fill="#fff" opacity=".95"><ellipse cx="150" cy="90" rx="70" ry="28"/><ellipse cx="190" cy="78" rx="45" ry="30"/><ellipse cx="430" cy="130" rx="60" ry="22"/><ellipse cx="460" cy="118" rx="38" ry="26"/></g>
-  <polygon points="0,330 140,190 260,300 380,200 520,330" fill="#7FA66B"/>
-  <polygon points="300,330 470,210 640,330" fill="#9BBE85"/>
-  <rect y="320" width="800" height="180" fill="#5BAF4A"/>
-  <polygon points="330,500 470,500 430,330 370,330" fill="#9A9A9A"/>
+  <circle cx="660" cy="90" r="48" fill="#FFD23F" stroke="#111" stroke-width="4"/>
+  <g fill="#fff" stroke="#111" stroke-width="3"><ellipse cx="150" cy="90" rx="70" ry="28"/><ellipse cx="190" cy="78" rx="45" ry="30"/><ellipse cx="430" cy="130" rx="60" ry="22"/><ellipse cx="460" cy="118" rx="38" ry="26"/></g>
+  <polygon points="0,330 140,190 260,300 380,200 520,330" fill="#7FA66B" stroke="#111" stroke-width="4"/>
+  <polygon points="300,330 470,210 640,330" fill="#9BBE85" stroke="#111" stroke-width="4"/>
+  <rect y="320" width="800" height="180" fill="#5BAF4A"/><line x1="0" y1="320" x2="800" y2="320" stroke="#111" stroke-width="4"/>
+  <polygon points="330,500 470,500 430,320 370,320" fill="#9A9A9A" stroke="#111" stroke-width="4"/>
   <g stroke="#fff" stroke-width="6" stroke-dasharray="26 22"><line x1="400" y1="340" x2="400" y2="500"/></g>
-  <g><rect x="90" y="250" width="150" height="110" fill="#F4C7A1"/><polygon points="80,252 165,185 250,252" fill="#C2452D"/><rect x="150" y="300" width="36" height="60" fill="#7A4A2A"/><rect x="105" y="275" width="34" height="30" fill="#8FD3FF" stroke="#fff" stroke-width="4"/><rect x="196" y="275" width="34" height="30" fill="#8FD3FF" stroke="#fff" stroke-width="4"/></g>
-  <g><rect x="606" y="300" width="28" height="90" fill="#7A4A2A"/><circle cx="620" cy="255" r="62" fill="#2E8B57"/><circle cx="580" cy="290" r="40" fill="#3BA55D"/><circle cx="662" cy="290" r="40" fill="#3BA55D"/></g>
-  <g><rect x="700" y="330" width="10" height="70" fill="#6B4F2A"/><rect x="668" y="316" width="74" height="30" rx="4" fill="#FFF"/><text x="705" y="339" font-size="22" font-weight="700" text-anchor="middle" fill="#0E7C7B" font-family="sans-serif">公園</text></g>
-  <g><circle cx="120" cy="440" r="10" fill="#FF6B9A"/><circle cx="160" cy="455" r="9" fill="#FFD23F"/><circle cx="210" cy="438" r="10" fill="#FF6B9A"/><circle cx="560" cy="450" r="9" fill="#FFD23F"/><circle cx="520" cy="430" r="10" fill="#FF6B9A"/><circle cx="740" cy="455" r="9" fill="#FF6B9A"/></g>
-  <g><circle cx="300" cy="400" r="16" fill="#F1C27D"/><rect x="286" y="416" width="28" height="40" rx="6" fill="#2563EB"/><rect x="288" y="455" width="10" height="30" fill="#1B2430"/><rect x="302" y="455" width="10" height="30" fill="#1B2430"/><rect x="266" y="418" width="14" height="40" fill="#8B5A2B" transform="rotate(-15 273 418)"/></g>
+  <g stroke="#111" stroke-width="4"><rect x="90" y="250" width="150" height="110" fill="#F4C7A1"/><polygon points="80,252 165,185 250,252" fill="#C2452D"/><rect x="150" y="300" width="36" height="60" fill="#7A4A2A"/><rect x="105" y="275" width="34" height="30" fill="#8FD3FF"/><rect x="196" y="275" width="34" height="30" fill="#8FD3FF"/></g>
+  <g stroke="#111" stroke-width="4"><rect x="606" y="300" width="28" height="90" fill="#7A4A2A"/><circle cx="620" cy="255" r="62" fill="#2E8B57"/><circle cx="580" cy="290" r="40" fill="#3BA55D"/><circle cx="662" cy="290" r="40" fill="#3BA55D"/></g>
+  <g><rect x="700" y="330" width="10" height="70" fill="#6B4F2A"/><rect x="668" y="316" width="74" height="30" rx="4" fill="#FFF" stroke="#111" stroke-width="3"/><text x="705" y="339" font-size="22" font-weight="900" text-anchor="middle" fill="#111" font-family="sans-serif">公園</text></g>
+  <g stroke="#111" stroke-width="2"><circle cx="120" cy="440" r="10" fill="#FF6B9A"/><circle cx="160" cy="455" r="9" fill="#FFD23F"/><circle cx="210" cy="438" r="10" fill="#FF6B9A"/><circle cx="560" cy="450" r="9" fill="#FFD23F"/><circle cx="520" cy="430" r="10" fill="#FF6B9A"/><circle cx="740" cy="455" r="9" fill="#FF6B9A"/></g>
+  <g stroke="#111" stroke-width="3"><circle cx="300" cy="400" r="16" fill="#F1C27D"/><rect x="286" y="416" width="28" height="40" rx="6" fill="#2F6FED"/><rect x="288" y="455" width="10" height="30" fill="#111"/><rect x="302" y="455" width="10" height="30" fill="#111"/><rect x="266" y="418" width="14" height="40" fill="#8B5A2B" transform="rotate(-15 273 418)"/></g>
   </svg>`;
 }
 function diseaseOverlay(k) {
@@ -428,19 +535,22 @@ function diseaseOverlay(k) {
   if (k === 'macular') { ov.style.background = 'radial-gradient(ellipse 24% 26% at 50% 50%, #151515 0%, #151515 55%, rgba(21,21,21,.75) 75%, rgba(21,21,21,0) 100%)'; }
   if (k === 'diabetic') {
     inner.style.filter = 'blur(1.6px) contrast(.9)';
-    const spots = []; for (let i = 0; i < 11; i++) { const x = 10 + rnd(80), y = 10 + rnd(80), r = 3 + rnd(6); spots.push(`radial-gradient(circle at ${x}% ${y}%, rgba(55,0,0,.95) 0, rgba(55,0,0,.95) ${r}%, rgba(55,0,0,0) ${r + 3}%)`); }
+    const spots = []; for (let i = 0; i < 11; i++) { const x = 10 + rnd(80), y = 10 + rnd(80), r = 3 + rnd(5); spots.push(`radial-gradient(circle at ${x}% ${y}%, rgba(55,0,0,.95) 0, rgba(55,0,0,.95) ${r}%, rgba(55,0,0,0) ${r + 3}%)`); }
     spots.push('radial-gradient(ellipse 30% 22% at 62% 40%, rgba(40,0,0,.55) 0, rgba(40,0,0,0) 70%)');
     ov.style.background = spots.join(',');
   }
   return wrap;
 }
 function shapeSVG(shape, color) {
-  const s = `fill="${color}" stroke="#1B2430" stroke-width="3"`;
+  const s = `fill="${color}" stroke="#111" stroke-width="4"`;
   if (shape === 'circle') return `<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="42" ${s}/></svg>`;
   if (shape === 'square') return `<svg viewBox="0 0 100 100"><rect x="10" y="10" width="80" height="80" rx="8" ${s}/></svg>`;
   if (shape === 'triangle') return `<svg viewBox="0 0 100 100"><polygon points="50,8 94,90 6,90" ${s} stroke-linejoin="round"/></svg>`;
   const pts = []; for (let i = 0; i < 10; i++) { const a = -Math.PI / 2 + i * Math.PI / 5, r = i % 2 ? 20 : 46; pts.push((50 + r * Math.cos(a)).toFixed(1) + ',' + (50 + r * Math.sin(a)).toFixed(1)); }
   return `<svg viewBox="0 0 100 100"><polygon points="${pts.join(' ')}" ${s} stroke-linejoin="round"/></svg>`;
+}
+function cupSVG() {
+  return `<svg viewBox="0 0 100 110" aria-hidden="true"><path d="M12 12 H88 L78 104 H22 Z" fill="#F15A29" stroke="#111" stroke-width="5" stroke-linejoin="round"/><rect x="6" y="4" width="88" height="16" rx="6" fill="#F6ED00" stroke="#111" stroke-width="5"/><path d="M30 30 L26 92" stroke="#fff" stroke-width="6" stroke-linecap="round" opacity=".7"/></svg>`;
 }
 
 /* =====================================================================
@@ -450,11 +560,11 @@ function shapeSVG(shape, color) {
    ===================================================================== */
 const MODES = {};
 
-/* ---------- 1. 找不一樣的字 ---------- */
+/* ---------- 找不一樣的字 ---------- */
 MODES.odd = {
-  name: '找不一樣的字', ico: '🔍', desc: '一堆字裡藏了一個不一樣的，大家一起找出來、喊出第幾格。',
+  name: '找不一樣的字', desc: '一堆字裡藏了一個不一樣的，大家一起找出來、喊出格子號碼。',
   opts: [{ key: 'level', label: '難度', values: [[1, '簡單 3×3'], [2, '中等 4×4'], [3, '困難 5×5']] }],
-  guide: ['說明：「這些字看起來都一樣，但有一個不一樣，請大家找找看在第幾格。」', '請找到的人舉手或直接喊格子號碼（左上角有小數字），不要用手指戳螢幕。', '按「揭曉答案」後，請大家一起唸出兩個字，說說哪裡不一樣（多一點、少一撇）。', '延伸：藥袋、路牌、標示也要看得清楚，看不清楚時要戴眼鏡或請人幫忙確認。', '難度可依大家的反應調整；5×5 的字較小，投影時請坐近一點。'],
+  guide: ['說明：「這些字看起來都一樣，但有一個不一樣，請大家找找看在第幾格。」', '請找到的人舉手或直接喊左上角黃色圓圈裡的號碼，不要用手指戳螢幕。', '按「揭曉答案」後，請大家一起唸出兩個字，說說哪裡不一樣（多一點、少一撇）。', '延伸：藥袋、路牌、標示也要看得清楚，看不清楚時要戴眼鏡或請人幫忙確認。', '難度可依大家的反應調整；5×5 的字較小，投影時請坐近一點。'],
   make() {
     const lv = S.odd.level, size = lv === 1 ? 3 : lv === 2 ? 4 : 5;
     const pool = lv === 1 ? ODD_EASY : lv === 2 ? ODD_EASY.concat(ODD_HARD) : ODD_HARD;
@@ -464,8 +574,10 @@ MODES.odd = {
       render(st) {
         st.appendChild(el('h2', 'prompt', `哪一格的字不一樣？`));
         const g = el('div', 'oddgrid'); g.style.gridTemplateColumns = `repeat(${size},minmax(0,1fr))`;
-        g.style.fontSize = `calc(min(92vw, 900px, var(--stage-h) - 130px) / ${size} * 0.68)`;
-        for (let i = 0; i < n; i++) { const c = el('div', 'cell', `<i>${i + 1}</i>${i === idx ? pair[1] : pair[0]}`); c.dataset.i = i; g.appendChild(c); }
+        const cell = `min(92vw, 900px, var(--stage-h) - 150px) / ${size}`;
+        g.style.fontSize = `calc(${cell} * 0.58)`;
+        g.style.setProperty('--badge', `clamp(15px, calc(${cell} * 0.2), 34px)`);
+        for (let i = 0; i < n; i++) { const c = el('div', 'cell', `<i>${i + 1}</i><span>${i === idx ? pair[1] : pair[0]}</span>`); c.dataset.i = i; g.appendChild(c); }
         st.appendChild(g);
       },
       reveal(st) {
@@ -476,9 +588,9 @@ MODES.odd = {
   }
 };
 
-/* ---------- 2. 說出顏色 ---------- */
+/* ---------- 說出顏色 ---------- */
 MODES.stroop = {
-  name: '說出顏色', ico: '🎨', desc: '字寫「紅」卻是藍色的！請大聲說出「字的顏色」，不是字的意思。',
+  name: '說出顏色', desc: '字寫「紅」卻是藍色的！請大聲說出「字的顏色」，不是字的意思。',
   opts: [{ key: 'n', label: '一次幾個字', values: [[1, '1 個'], [2, '2 個'], [4, '4 個'], [6, '6 個']] }, { key: 'auto', label: '自動換題', values: [[0, '關'], [3, '3 秒'], [5, '5 秒'], [8, '8 秒']] }],
   guide: ['說明：「請大家說出字『看起來的顏色』，不是唸那個字。」先示範一題：字寫「紅」但是藍色的，要說「藍」。', '第一輪先用 1 個字、不自動換題，讓大家習慣；熟了再開 4 個字一排，一起連著唸。', '可以反過來玩「唸字不管顏色」當作對照，感受大腦「看、想、說」同時運作的感覺。', '開啟「自動換題」就像節拍器，可搭配分桌輪流接龍。', '這是眼睛與認知的雙重訓練，唸錯了大家一起笑一笑，沒關係。'],
   make() {
@@ -513,9 +625,9 @@ MODES.stroop = {
   stop() { clearInterval(this.autoTimer); this.autoTimer = null; }
 };
 
-/* ---------- 3. 缺口比一比 ---------- */
+/* ---------- 缺口比一比 ---------- */
 MODES.gap = {
-  name: '缺口比一比', ico: '👉', desc: '看 C 字或 E 字的缺口朝哪邊，大家用手比出方向。可以慢慢變小。',
+  name: '缺口比一比', desc: '看 C 字或 E 字的缺口朝哪邊，大家用手比出方向。可以慢慢變小。',
   opts: [{ key: 'type', label: '符號', values: [['C', 'C 缺口環'], ['E', 'E 字']] }, { key: 'dirs', label: '方向', values: [[4, '上下左右'], [8, '含斜角']] }],
   guide: ['說明：「螢幕上的 C（或 E）缺口開在哪一邊，請大家用手比出來。」先用最大的一級示範。', '用下方「變小／變大」調整大小，從大到小，看大家到第幾級還比得出來；比不出來很正常，不是比賽。', '提醒：這只是互動體驗，<b>不是正式視力檢查</b>。看不清楚、兩眼差很多，請到眼科或衛生所做檢查。', '可請大家輪流遮住一眼試試看（像方格表一樣，兩眼要分開），感受兩眼有沒有差別。', '延伸：日常看路牌、藥袋、公車號碼也是一樣的原理，看不清楚要配對眼鏡。'],
   level: 1,
@@ -534,16 +646,16 @@ MODES.gap = {
   },
   extraCtrl() {
     const self = this;
-    const a = el('button', 'cbtn', '🔍 變小'), b = el('button', 'cbtn', '🔎 變大');
+    const a = el('button', 'cbtn', '變小 －'), b = el('button', 'cbtn', '變大 ＋');
     a.onclick = () => { if (self.level < self.sizes.length) { self.level++; redrawCurrent(); } };
     b.onclick = () => { if (self.level > 1) { self.level--; redrawCurrent(); } };
     return [b, a];
   }
 };
 
-/* ---------- 4. 方格表檢查 ---------- */
+/* ---------- 方格表檢查 ---------- */
 MODES.amsler = {
-  name: '方格表檢查', ico: '▦', desc: '認識阿姆斯勒方格表：怎麼做黃斑部自我檢查，並看圖分辨「哪裡不對勁」。',
+  name: '方格表檢查', desc: '認識阿姆斯勒方格表：怎麼做黃斑部自我檢查，並看圖分辨「哪裡不對勁」。',
   opts: [{ key: 'mode', label: '內容', values: [['steps', '檢查步驟'], ['quiz', '看圖辨異常']] }],
   guide: ['先選「檢查步驟」，帶大家一步一步看：光線亮、戴老花眼鏡、距離 30 公分、遮一眼、盯中間黑點。', '請大家拿出作業單上的方格表實際做一次（螢幕上的只是示範，距離不對）。', '再切到「看圖辨異常」：出現一張方格表，請大家說「正常」還是「哪裡怪怪的」，再揭曉。', '強調：有彎曲、黑影、缺一塊、模糊，或跟上次不一樣，要盡快看眼科。', '55 歲以上、有糖尿病、高度近視、抽菸的人，更要常常自我檢查；就算正常，每年也要散瞳檢查眼底。'],
   make() {
@@ -552,7 +664,7 @@ MODES.amsler = {
         render(st) {
           st.appendChild(el('h2', 'prompt', `黃斑部自我檢查：阿姆斯勒方格表<small>（實際檢查請用作業單上的紙本方格表）</small>`));
           const w = el('div', 'amwrap');
-          w.innerHTML = amslerSVG('normal') + `<div class="steps"><ol><li>光線要亮，戴上老花眼鏡</li><li>方格表放在眼前 <b>30 公分</b></li><li>用手遮住左眼</li><li>右眼盯住中間黑點不移動</li><li>看線條有沒有<b>彎、斷、缺、糊</b></li><li>換遮右眼，左眼再做一次</li></ol></div>`;
+          w.innerHTML = amslerSVG('normal') + `<div class="steps"><ol><li>光線要亮，戴上老花眼鏡</li><li>方格表放在眼前 <span class="mark">30 公分</span></li><li>用手遮住左眼</li><li>右眼盯住中間黑點不移動</li><li>看線條有沒有<span class="mark">彎、斷、缺、糊</span></li><li>換遮右眼，左眼再做一次</li></ol></div>`;
           st.appendChild(w);
         },
         reveal(st) { st.appendChild(el('div', 'answer', `有彎曲、黑影、缺一塊、模糊，或跟上次不一樣 → 盡快看眼科<span class="exp">線條都正常，也要每年到眼科散瞳檢查眼底。</span>`)); }
@@ -574,9 +686,9 @@ MODES.amsler = {
   }
 };
 
-/* ---------- 5. 看出去的樣子 ---------- */
+/* ---------- 看出去的樣子 ---------- */
 MODES.disease = {
-  name: '看出去的樣子', ico: '👓', desc: '同一個公園，不同眼睛問題看出去會變怎樣？猜猜這是哪一種。',
+  name: '看出去的樣子', desc: '同一個公園，不同眼睛問題看出去會變怎樣？猜猜這是哪一種。',
   guide: ['說明：「這是同一個公園，不過是用不同的眼睛看出去的樣子（示意），猜猜看是哪一種眼睛問題？」', '請大家先描述看到什麼：霧霧的？中間黑一塊？旁邊黑？有黑點？再對應到眼疾。', '揭曉後唸出「常見警訊」和「怎麼辦」，問問大家：「身邊有沒有人有這種情形？」', '重點提醒：白內障像毛玻璃、青光眼像隧道、黃斑部中間看不見、糖尿病視網膜病變有黑點遮眼。', '突然看不見、閃光、黑影變多，要立刻就醫。'],
   make() {
     const d = pick(DISEASES);
@@ -595,11 +707,36 @@ MODES.disease = {
   }
 };
 
-/* ---------- 6. 護眼問答 ---------- */
+/* ---------- 視錯覺 ---------- */
+MODES.illusion = {
+  name: '視錯覺', desc: '哪條線比較長？哪個圓比較大？眼見不一定為憑，看看大腦怎麼「騙」我們。',
+  guide: ['說明：「眼睛把影像送到大腦，大腦會用經驗去『猜』。有時候會猜錯，這就是視錯覺。」', '每一題先讓大家喊答案（上面／下面／一樣），再揭曉。揭曉時會出現橘色或藍色的輔助線，證明真相。', '可以追問：「為什麼會看錯？」→ 旁邊的箭頭、大小圓、斜線都會影響判斷。', '護眼連結：看藥袋、看價格、看路牌時，若覺得怪怪的，就像這些錯覺一樣要「再確認一次」，不要急。', '視錯覺人人都有，不是眼睛壞掉；但如果直線「平常也看起來彎」，那就要做方格表檢查、看眼科。'],
+  deck: [], di: 0,
+  make() {
+    if (!this.deck.length || this.di >= this.deck.length) { this.deck = shuffle(ILLUSIONS); this.di = 0; }
+    const it = this.deck[this.di++];
+    return {
+      render(st) {
+        st.appendChild(el('h2', 'prompt', `${it.q}<small>${it.name}</small>`));
+        const box = el('div', 'illu', `<svg viewBox="0 0 850 500" role="img" aria-label="${it.name}">${it.svg()}</svg>`);
+        st.appendChild(box);
+        const ch = el('div', 'choices'); it.o.forEach((o, i) => { const b = el('button', '', o); b.dataset.i = i; ch.appendChild(b); });
+        st.appendChild(ch);
+      },
+      reveal(st) {
+        st.querySelector('.illu').classList.add('revealed');
+        st.querySelectorAll('.choices button').forEach(b => b.classList.add(+b.dataset.i === it.a ? 'right' : 'dim'));
+        st.appendChild(el('div', 'answer', `答案：${it.o[it.a]}<span class="exp">${it.exp}</span>`));
+      }
+    };
+  }
+};
+
+/* ---------- 護眼問答 ---------- */
 MODES.quiz = {
-  name: '護眼問答', ico: '❓', desc: '是非題與選擇題，大家舉手或比 ○ ✕ 一起回答。',
+  name: '護眼問答', desc: '是非題與選擇題，大家舉手或比 ○ ✕ 一起回答。',
   opts: [{ key: 'type', label: '題型', values: [['all', '全部'], ['ox', '是非題'], ['mc', '選擇題']] }],
-  guide: ['是非題：請大家用雙手比 ○（對）或 ✕（錯），或舉手表決；選擇題用手指比 1、2、3。', '老師先把題目大聲唸一次，等 5 秒再揭曉（可開啟「⏱ 倒數」）。', '揭曉後唸出補充說明，請答對的桌次 +1 分。', '可以請答對的長輩分享：「你平常是怎麼做的？」', '最後回到作業單的「每天護眼任務」，鼓勵大家這週每天打勾。'],
+  guide: ['是非題：請大家用雙手比 ○（對）或 ✕（錯），或舉手表決；選擇題用手指比 1、2、3。', '老師先把題目大聲唸一次，等 5 秒再揭曉（可開啟「倒數」）。', '揭曉後唸出補充說明，請答對的桌次 +1 分。', '可以請答對的長輩分享：「你平常是怎麼做的？」', '最後回到作業單的「每天護眼任務」，鼓勵大家這週每天打勾。'],
   deck: [], di: 0,
   make() {
     const pool = QUIZ.filter(q => S.quiz.type === 'all' || q.t === S.quiz.type);
@@ -610,8 +747,8 @@ MODES.quiz = {
     return {
       render(st) {
         st.appendChild(el('h2', 'prompt', q.q));
-        const ch = el('div', 'choices'); ch.style.fontSize = '1.2em';
-        opts.forEach((o, i) => { const b = el('button', '', o); b.dataset.i = i; b.style.fontSize = 'clamp(24px,3.4vw,40px)'; b.style.padding = '18px 34px'; ch.appendChild(b); });
+        const ch = el('div', 'choices');
+        opts.forEach((o, i) => { const b = el('button', '', o); b.dataset.i = i; b.style.fontSize = 'clamp(24px,3.4vw,40px)'; b.style.padding = '16px 34px'; ch.appendChild(b); });
         st.appendChild(ch);
       },
       reveal(st) {
@@ -622,11 +759,11 @@ MODES.quiz = {
   }
 };
 
-/* ---------- 7. 數一數 ---------- */
+/* ---------- 數一數 ---------- */
 MODES.count = {
-  name: '數一數', ico: '🔢', desc: '畫面上有很多形狀，請數數看指定的形狀有幾個。',
+  name: '數一數', desc: '畫面上有很多形狀，請數數看指定的形狀有幾個。',
   opts: [{ key: 'n', label: '數量', values: [[12, '少 12 個'], [16, '中 16 個'], [24, '多 24 個']] }],
-  guide: ['說明：「請大家數一數，畫面上『紅色的圓形』有幾個？」數好的人把數字放在心裡，老師數到三一起喊。', '揭曉時目標會閃紅圈、其他變淡，可以請大家再一起點數一次。', '這是視覺搜尋訓練：眼睛要在很多東西裡找到目標，跟在藥盒裡找對的藥一樣。', '數量「多」時可以分桌比賽，最接近正確答案的桌次得分。', '覺得眼睛酸就休息，看看遠方。'],
+  guide: ['說明：「請大家數一數，畫面上『紅色的圓形』有幾個？」數好的人把數字放在心裡，老師數到三一起喊。', '揭曉時目標會閃橘圈、其他變淡，可以請大家再一起點數一次。', '這是視覺搜尋訓練：眼睛要在很多東西裡找到目標，跟在藥盒裡找對的藥一樣。', '數量「多」時可以分桌比賽，最接近正確答案的桌次得分。', '覺得眼睛酸就休息，看看遠方。'],
   make() {
     const n = S.count.n;
     const target = { shape: pick(SHAPES), color: pick(SHAPE_COLORS) };
@@ -637,12 +774,11 @@ MODES.count = {
       const s = pick(SHAPES), c = pick(SHAPE_COLORS); if (s === target.shape && c.n === target.color.n) continue;
       items.push({ shape: s, color: c, hit: false });
     }
-    // 位置：用格子避免重疊
     const cols = 8, rows = 5; const cells = shuffle(Array.from({ length: cols * rows }, (_, i) => i)).slice(0, n);
     const placed = shuffle(items).map((it, i) => { const c = cells[i]; return Object.assign(it, { x: (c % cols) * (100 / cols) + 1.5 + Math.random() * 3, y: Math.floor(c / cols) * (100 / rows) + 2 + Math.random() * 5 }); });
     return {
       render(st) {
-        st.appendChild(el('h2', 'prompt', `<span style="color:${target.color.c}">${target.color.n}的${SHAPE_NAME[target.shape]}</span> 有幾個？`));
+        st.appendChild(el('h2', 'prompt', `<span style="color:${target.color.c}; -webkit-text-stroke:1px #111">${target.color.n}的${SHAPE_NAME[target.shape]}</span> 有幾個？`));
         const f = el('div', 'field');
         placed.forEach(it => { const d = el('div', 'sh' + (it.hit ? ' hit0' : ''), shapeSVG(it.shape, it.color.c)); d.style.left = it.x + '%'; d.style.top = it.y + '%'; f.appendChild(d); });
         st.appendChild(f);
@@ -655,12 +791,153 @@ MODES.count = {
   }
 };
 
-/* ---------- 8. 眼球操（跟著球走） ---------- */
+/* ---------- 杯子追蹤（視覺追視） ---------- */
+MODES.cups = {
+  name: '杯子追蹤', desc: '球放進杯子後開始洗牌，眼睛盯緊！最後球在幾號位置？',
+  opts: [{ key: 'n', label: '杯子', values: [[3, '3 個'], [4, '4 個'], [5, '5 個']] }, { key: 'speed', label: '速度', values: [[0.7, '慢'], [1, '中'], [1.5, '快']] }],
+  guide: ['說明：「球會放在其中一個杯子下面，然後杯子會換位置。大家眼睛盯著有球的杯子，最後喊出球在幾號位置。」', '先用 3 個杯子、慢速示範一次。按「開始洗牌」後，提醒大家「頭不動，眼睛跟著走」。', '洗完後大家一起喊號碼，再按「揭曉答案」掀開杯子。', '這是「視覺追視」訓練：眼睛跟著移動的東西走，對看球類比賽、過馬路看車都很重要。', '覺得眼睛酸或頭暈就停下來，閉眼休息。'],
+  make() {
+    const n = S.cups.n, spd = S.cups.speed;
+    const ballCup = rnd(n); const swaps = Math.round(4 + n + (spd - 1) * 3);
+    const q = { slots: Array.from({ length: n }, (_, i) => i), done: false, running: false, finalSlot: ballCup, cupEls: [] };
+    return {
+      render(st) {
+        st.appendChild(el('h2', 'prompt', `球在哪一個杯子下面？眼睛盯緊！`));
+        const area = el('div', 'cupsarea'); area.style.setProperty('--cw', (100 / n) + '%'); area.style.setProperty('--spd', (0.55 / spd).toFixed(2) + 's');
+        for (let s = 0; s < n; s++) { const num = el('div', 'slotnum', s + 1); num.style.left = (s * 100 / n) + '%'; area.appendChild(num); }
+        q.cupEls = [];
+        for (let c = 0; c < n; c++) {
+          const cup = el('div', 'cup', cupSVG()); cup.style.left = (q.slots.indexOf(c) * 100 / n) + '%';
+          if (c === ballCup) { cup.appendChild(el('div', 'ball')); }
+          if (!q.done) cup.classList.toggle('lift', c === ballCup);
+          q.cupEls.push(cup); area.appendChild(cup);
+        }
+        st.appendChild(area);
+        const msg = el('div', 'cups-msg', q.done ? '球在幾號位置？大家一起喊！' : '記住球的位置…'); st.appendChild(msg);
+        if (!q.done) {
+          const btn = el('button', 'bigbtn', '▶︎ 開始洗牌'); st.appendChild(btn);
+          btn.onclick = async () => {
+            if (q.running) return; q.running = true; btn.disabled = true; btn.style.opacity = .4;
+            q.cupEls[ballCup].classList.remove('lift'); await sleep(700);
+            msg.textContent = '盯緊有球的杯子！';
+            for (let i = 0; i < swaps; i++) {
+              let a = rnd(n), b = rnd(n); while (b === a) b = rnd(n);
+              const ca = q.slots[a], cb = q.slots[b]; q.slots[a] = cb; q.slots[b] = ca;
+              q.cupEls[cb].style.left = (a * 100 / n) + '%'; q.cupEls[ca].style.left = (b * 100 / n) + '%';
+              await sleep(600 / spd);
+            }
+            q.done = true; q.running = false; q.finalSlot = q.slots.indexOf(ballCup);
+            msg.textContent = '球在幾號位置？大家一起喊！'; btn.remove(); beep(880, .15);
+          };
+        }
+      },
+      reveal(st) {
+        q.finalSlot = q.slots.indexOf(ballCup);
+        q.cupEls[ballCup].classList.add('lift');
+        st.appendChild(el('div', 'answer', `答案：第 ${q.finalSlot + 1} 號<span class="exp">眼睛跟著杯子移動，就是「視覺追視」。頭不動、眼睛動，常常練習會更靈活。</span>`));
+      }
+    };
+  }
+};
+
+/* ---------- 戳泡泡（手眼協調） ---------- */
+MODES.bubbles = {
+  name: '戳泡泡', desc: '泡泡冒出來就戳破它！限時挑戰，看看能戳破幾個。適合觸控螢幕或平板。',
+  free: true,
+  opts: [{ key: 'size', label: '泡泡', values: [[3, '大'], [2, '中'], [1, '小']] }, { key: 'dur', label: '時間', values: [[30, '30 秒'], [45, '45 秒'], [60, '60 秒']] }],
+  guide: ['說明：「泡泡冒出來，用手指（或滑鼠）點一下就會破。時間到看看戳破幾個！」', '在觸控螢幕或平板上玩最好；投影時可請長輩輪流上來點，或老師操作滑鼠、大家喊「左上！右下！」指揮。', '黃色星星泡泡算兩分；沒戳到的泡泡幾秒後會自己消失，不扣分。', '這是「手眼協調」訓練：看到→判斷位置→伸手點，和拿杯子、按電梯、投幣是同一種能力。', '先用「大」泡泡、30 秒讓大家熟悉，再慢慢換小。站著玩時請注意腳步安全。'],
+  timer: null, spawn: null, score: 0, left: 0, running: false,
+  start(st) {
+    const self = this; self.running = false; self.score = 0; self.left = S.bubbles.dur;
+    const w = el('div', 'exwrap'); w.style.minHeight = '0';
+    w.appendChild(el('div', 'hud', `<span>戳破 <b id="bScore">0</b> 個</span><span class="time">剩 <b id="bTime">${self.left}</b> 秒</span>`));
+    const arena = el('div', 'bubblearena'); arena.id = 'bArena'; w.appendChild(arena);
+    arena.appendChild(el('div', 'cups-msg', '按下方「開始」就會冒泡泡'));
+    st.appendChild(w);
+    const p = $('#btnPlay'); if (p) { p.textContent = '▶︎ 開始'; p.disabled = false; }
+  },
+  stop() { this.running = false; clearInterval(this.timer); clearTimeout(this.spawn); },
+  toggle() {
+    if (this.running) return;
+    const arena = $('#bArena'); if (!arena) return; arena.innerHTML = '';
+    this.running = true; this.score = 0; this.left = S.bubbles.dur; $('#bScore').textContent = 0; $('#bTime').textContent = this.left; $('#btnPlay').textContent = '進行中…'; $('#btnPlay').disabled = true;
+    this.timer = setInterval(() => { this.left--; $('#bTime').textContent = this.left; if (this.left <= 3 && this.left > 0) beep(660, .08); if (this.left <= 0) this.finish(); }, 1000);
+    this.spawnOne();
+  },
+  spawnOne() {
+    if (!this.running) return;
+    const arena = $('#bArena'); const sz = [0, 70, 110, 160][S.bubbles.size]; const bs = Math.min(sz, arena.clientHeight * .4);
+    const gold = Math.random() < .2;
+    const b = el('div', 'bubble' + (gold ? ' gold' : ''), gold ? '★' : ''); b.style.setProperty('--bs', bs + 'px');
+    b.style.left = rnd(Math.max(1, arena.clientWidth - bs - 10)) + 'px'; b.style.top = rnd(Math.max(1, arena.clientHeight - bs - 10)) + 'px';
+    const life = setTimeout(() => { if (b.isConnected) { b.remove(); } }, 2600 + 1400 * (4 - S.bubbles.size));
+    b.addEventListener('pointerdown', e => { e.preventDefault(); if (!this.running) return; clearTimeout(life); this.score += gold ? 2 : 1; $('#bScore').textContent = this.score; b.classList.add('popping'); beep(gold ? 1320 : 988, .1); setTimeout(() => b.remove(), 250); });
+    arena.appendChild(b);
+    const gap = 650 + rnd(500) + (S.bubbles.size === 3 ? 300 : 0);
+    this.spawn = setTimeout(() => this.spawnOne(), gap);
+  },
+  finish() {
+    this.running = false; clearInterval(this.timer); clearTimeout(this.spawn); const arena = $('#bArena'); if (!arena) return;
+    arena.innerHTML = ''; const a = el('div', 'answer', `時間到！戳破 ${this.score} 個<span class="exp">看到→判斷位置→伸手點，就是手眼協調。按「再玩一次」換下一位。</span>`); a.style.cssText = 'position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); width:max-content; max-width:90%'; arena.appendChild(a);
+    $('#btnPlay').textContent = '▶︎ 再玩一次'; $('#btnPlay').disabled = false; beep(1046, .3);
+  },
+  onOpt() { this.stop(); const st = $('#stage'); st.innerHTML = ''; this.start(st); },
+  extraCtrl() {
+    const self = this; const play = el('button', 'cbtn primary', '▶︎ 開始'); play.id = 'btnPlay'; play.onclick = () => self.toggle();
+    return [play];
+  }
+};
+
+/* ---------- 數字連連看（手眼協調＋視覺搜尋） ---------- */
+MODES.trail = {
+  name: '數字連連看', desc: '依照 1→2→3 的順序點數字，點對了會連成一條線。看看幾秒完成！',
+  free: true,
+  opts: [{ key: 'n', label: '數字', values: [[8, '8 個'], [12, '12 個'], [16, '16 個']] }],
+  guide: ['說明：「請從 1 開始，依照順序點 2、3、4…，點對會變綠色並連成線。」', '黃色的圓圈就是下一個要點的數字，不確定時可以先用眼睛找，再動手。', '投影時可請長輩上來點，或老師拿滑鼠當「手」，全班用眼睛找、用嘴巴指揮：「3 在左下角！」', '這同時訓練視覺搜尋（在一堆數字裡找目標）和手眼協調，是常用的認知與視覺評估方式。', '完成時間只是參考，不比快，重點是「找得到、點得準」。'],
+  nodes: [], next: 1, t0: 0, timer: null,
+  start(st) {
+    const self = this; self.next = 1; self.t0 = 0; clearInterval(self.timer);
+    const n = S.trail.n;
+    const w = el('div', 'exwrap'); w.style.minHeight = '0';
+    w.appendChild(el('div', 'hud', `<span>下一個：<b id="tNext">1</b></span><span class="time"><b id="tTime">0.0</b> 秒</span>`));
+    const arena = el('div', 'trailarena'); arena.innerHTML = '<svg id="tLines"></svg>'; w.appendChild(arena); st.appendChild(w);
+    const ns = Math.max(54, Math.min(96, Math.min(arena.clientWidth, arena.clientHeight) / (n <= 8 ? 5 : n <= 12 ? 6 : 7)));
+    arena.style.setProperty('--ns', ns + 'px');
+    const cols = n <= 8 ? 4 : n <= 12 ? 5 : 6, rows = n <= 8 ? 3 : 4;
+    const cells = shuffle(Array.from({ length: cols * rows }, (_, i) => i)).slice(0, n);
+    self.nodes = [];
+    for (let i = 0; i < n; i++) {
+      const c = cells[i]; const cx = ((c % cols) + 0.5) / cols, cy = (Math.floor(c / cols) + 0.5) / rows;
+      const x = cx * 100 + (Math.random() - .5) * (60 / cols), y = cy * 100 + (Math.random() - .5) * (60 / rows);
+      const d = el('div', 'node' + (i === 0 ? ' next' : ''), i + 1); d.style.left = x + '%'; d.style.top = y + '%'; d.dataset.v = i + 1;
+      d.addEventListener('pointerdown', e => { e.preventDefault(); self.tap(+d.dataset.v, d); });
+      arena.appendChild(d); self.nodes.push({ v: i + 1, x, y, el: d });
+    }
+  },
+  stop() { clearInterval(this.timer); },
+  tap(v, d) {
+    if (this.next > this.nodes.length) return;
+    if (v !== this.next) { d.classList.add('wrong'); beep(220, .2, 'square'); setTimeout(() => d.classList.remove('wrong'), 350); return; }
+    if (v === 1) { this.t0 = performance.now(); this.timer = setInterval(() => { const t = $('#tTime'); if (t) t.textContent = ((performance.now() - this.t0) / 1000).toFixed(1); }, 100); }
+    d.classList.remove('next'); d.classList.add('done'); beep(700 + v * 40, .1);
+    if (v > 1) { const p = this.nodes[v - 2], q = this.nodes[v - 1]; const svg = $('#tLines'); const ln = document.createElementNS('http://www.w3.org/2000/svg', 'line'); ln.setAttribute('x1', p.x + '%'); ln.setAttribute('y1', p.y + '%'); ln.setAttribute('x2', q.x + '%'); ln.setAttribute('y2', q.y + '%'); ln.setAttribute('stroke', '#17B169'); ln.setAttribute('stroke-width', '6'); ln.setAttribute('stroke-linecap', 'round'); svg.appendChild(ln); }
+    this.next++;
+    if (this.next <= this.nodes.length) { $('#tNext').textContent = this.next; this.nodes[this.next - 1].el.classList.add('next'); }
+    else { clearInterval(this.timer); const sec = ((performance.now() - this.t0) / 1000).toFixed(1); $('#tTime').textContent = sec; $('#tNext').textContent = '完成！'; beep(1046, .3); const a = el('div', 'answer', `全部連完了！${sec} 秒<span class="exp">眼睛找、手去點，一起完成。按「再來一次」換下一位。</span>`); a.style.cssText = 'position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); z-index:5; width:max-content; max-width:90%'; $('.trailarena').appendChild(a); }
+  },
+  onOpt() { this.stop(); const st = $('#stage'); st.innerHTML = ''; this.start(st); },
+  extraCtrl() {
+    const self = this; const again = el('button', 'cbtn primary', '再來一次'); again.onclick = () => { self.stop(); const st = $('#stage'); st.innerHTML = ''; self.start(st); };
+    return [again];
+  }
+};
+
+/* ---------- 眼球操 ---------- */
 MODES.exercise = {
-  name: '眼球操', ico: '👀', desc: '跟著畫面上的球一起動眼睛：上下、左右、轉圈、遠近對焦。頭不動，眼睛動。',
+  name: '眼球操', desc: '跟著畫面上的球一起動眼睛：上下、左右、轉圈、遠近對焦。頭不動，眼睛動。',
   free: true,
   opts: [{ key: 'speed', label: '速度', values: [[0.7, '慢'], [1, '中'], [1.4, '快']] }],
-  guide: ['說明：「等一下頭不要動，眼睛跟著球走。慢慢動，不用力。」', '按「▶ 開始」就會從掌心熱敷開始，依序六個步驟自動進行；想跳過可點上方的步驟名稱。', '上下看、左右看：球停住 2 秒時，眼睛也停在那裡。轉圈圈：順時針 3 圈、逆時針 3 圈。', '遠近對焦：球變大時看自己伸出去的拇指，球變小時看遠方（教室最遠的牆）。', '<b>覺得痛、頭暈就停下來，閉眼休息。</b>做完可以接著做肩頸放鬆：聳肩 5 秒放下、頭慢慢左右轉、雙肩往後夾。'],
+  guide: ['說明：「等一下頭不要動，眼睛跟著球走。慢慢動，不用力。」', '按「開始」就會從掌心熱敷開始，依序六個步驟自動進行；想跳過可點上方的步驟名稱。', '上下看、左右看：球停住 2 秒時，眼睛也停在那裡。轉圈圈：順時針 3 圈、逆時針 3 圈。', '遠近對焦：球變大時看自己伸出去的拇指，球變小時看遠方（教室最遠的牆）。', '<b>覺得痛、頭暈就停下來，閉眼休息。</b>做完可以接著做肩頸放鬆：聳肩 5 秒放下、頭慢慢左右轉、雙肩往後夾。'],
   si: 0, running: false, raf: null, t0: 0, elapsed: 0,
   start(st) {
     const self = this; self.running = false; self.elapsed = 0;
@@ -668,7 +945,7 @@ MODES.exercise = {
     const tabs = el('div', 'exsteps'); EX_STEPS.forEach((s, i) => { const b = el('button', i === self.si ? 'on' : '', s.name); b.onclick = () => { self.goto(i); }; tabs.appendChild(b); });
     w.appendChild(tabs);
     w.appendChild(el('div', 'exhead', `<div class="stepname"></div><div class="inst"></div><div class="cnt"></div>`));
-    const arena = el('div', 'arena'); arena.appendChild(el('div', 'ball', '')); w.appendChild(arena);
+    const arena = el('div', 'arena'); arena.appendChild(el('div', 'exball', '')); w.appendChild(arena);
     w.appendChild(el('div', 'warn', '頭不動、眼睛動，慢慢來。痛或頭暈就停，閉眼休息。'));
     st.appendChild(w);
     self.show();
@@ -678,33 +955,32 @@ MODES.exercise = {
   show() {
     const s = EX_STEPS[this.si]; document.querySelectorAll('.exsteps button').forEach((b, i) => b.classList.toggle('on', i === this.si));
     $('.stepname').textContent = s.name; $('.inst').textContent = s.inst; $('.cnt').textContent = this.running ? '' : '按「▶ 開始」';
-    const ball = $('.ball'); ball.style.left = '50%'; ball.style.top = '50%'; ball.style.transform = 'translate(-50%,-50%) scale(1)'; ball.textContent = '';
-    if (s.type === 'hold') { ball.textContent = '🤲'; ball.style.transform = 'translate(-50%,-50%) scale(1.6)'; }
-    $('#btnPlay').textContent = this.running ? '⏸ 暫停' : '▶ 開始';
+    const ball = $('.exball'); ball.style.left = '50%'; ball.style.top = '50%'; ball.style.transform = 'translate(-50%,-50%) scale(1)'; ball.textContent = '';
+    if (s.type === 'hold') { ball.textContent = '蓋眼'; ball.style.transform = 'translate(-50%,-50%) scale(1.6)'; }
+    const p = $('#btnPlay'); if (p) p.textContent = this.running ? '暫停' : '▶︎ 開始';
   },
   toggle() {
-    if (this.running) { this.running = false; cancelAnimationFrame(this.raf); $('#btnPlay').textContent = '▶ 繼續'; $('.cnt').textContent = '暫停中'; return; }
-    this.running = true; this.t0 = performance.now() - this.elapsed * 1000; $('#btnPlay').textContent = '⏸ 暫停';
+    if (this.running) { this.running = false; cancelAnimationFrame(this.raf); $('#btnPlay').textContent = '▶︎ 繼續'; $('.cnt').textContent = '暫停中'; return; }
+    this.running = true; this.t0 = performance.now() - this.elapsed * 1000; $('#btnPlay').textContent = '暫停';
     const loop = (now) => { if (!this.running) return; this.elapsed = (now - this.t0) / 1000; if (this.tick(this.elapsed)) { this.raf = requestAnimationFrame(loop); } };
     this.raf = requestAnimationFrame(loop);
   },
   finishStep() {
     beep(1046, .25);
-    if (this.si < EX_STEPS.length - 1) { this.si++; this.elapsed = 0; this.t0 = performance.now(); this.show(); $('#btnPlay').textContent = '⏸ 暫停'; return true; }
-    this.running = false; $('.cnt').textContent = '全部做完了，閉眼休息一下 👏'; $('#btnPlay').textContent = '▶ 再做一次'; this.si = 0; this.elapsed = 0; return false;
+    if (this.si < EX_STEPS.length - 1) { this.si++; this.elapsed = 0; this.t0 = performance.now(); this.show(); $('#btnPlay').textContent = '暫停'; return true; }
+    this.running = false; $('.cnt').textContent = '全部做完了，閉眼休息一下！'; $('#btnPlay').textContent = '▶︎ 再做一次'; this.si = 0; this.elapsed = 0; return false;
   },
   tick(t) {
-    const s = EX_STEPS[this.si], sp = S.exercise.speed, ball = $('.ball'), cnt = $('.cnt');
+    const s = EX_STEPS[this.si], sp = S.exercise.speed, ball = $('.exball'), cnt = $('.cnt');
     const arena = $('.arena'); const AW = arena.clientWidth, AH = arena.clientHeight;
     const ease = x => 0.5 - 0.5 * Math.cos(Math.PI * x);
     let x = 0.5, y = 0.5, scale = 1;
     if (s.type === 'hold' || s.type === 'blink') {
       const dur = s.type === 'hold' ? s.dur : s.reps * 1.2 / sp; const left = Math.max(0, dur - t);
-      if (s.type === 'hold') { cnt.textContent = `還有 ${Math.ceil(left)} 秒`; scale = 1.6; ball.textContent = '🤲'; }
-      else { const k = Math.floor(t * sp / 1.2); const open = ((t * sp) % 1.2) > 0.6; cnt.textContent = `第 ${Math.min(s.reps, k + 1)} 次`; ball.textContent = open ? '👁️' : '😌'; scale = 1.5; }
+      if (s.type === 'hold') { cnt.textContent = `還有 ${Math.ceil(left)} 秒`; scale = 1.6; ball.textContent = '蓋眼'; }
+      else { const k = Math.floor(t * sp / 1.2); const open = ((t * sp) % 1.2) > 0.6; cnt.textContent = `第 ${Math.min(s.reps, k + 1)} 次`; ball.textContent = open ? '張' : '閉'; scale = 1.5; }
       if (t >= dur) return this.finishStep();
     } else if (s.type === 'move') {
-      // 一個來回：去 1.2s、停 2s、回 1.2s、停 2s（依速度縮放）
       const seg = [1.2 / sp, 2 / sp, 1.2 / sp, 2 / sp], per = seg.reduce((a, b) => a + b, 0); const total = per * s.reps;
       if (t >= total) return this.finishStep();
       const rep = Math.floor(t / per); let u = t - rep * per; let pos;
@@ -720,22 +996,27 @@ MODES.exercise = {
       const per = 5 / sp, total = per * s.reps; if (t >= total) return this.finishStep();
       const rep = Math.floor(t / per), u = (t - rep * per) / per; const near = u < 0.5;
       scale = near ? 1 + 1.4 * ease(Math.min(1, u / 0.35)) : 2.4 - 2.0 * ease(Math.min(1, (u - 0.5) / 0.35));
-      ball.textContent = near ? '👍' : '🏔️'; cnt.textContent = `${near ? '看拇指（近）' : '看遠方（遠）'}　第 ${rep + 1} 次／共 ${s.reps} 次`;
+      ball.textContent = near ? '近' : '遠'; cnt.textContent = `${near ? '看拇指（近）' : '看遠方（遠）'}　第 ${rep + 1} 次／共 ${s.reps} 次`;
     }
     ball.style.left = (x * 100) + '%'; ball.style.top = (y * 100) + '%'; ball.style.transform = `translate(-50%,-50%) scale(${scale.toFixed(3)})`;
     return true;
   },
-  onOpt() { /* 速度改變時重算起點 */ this.elapsed = 0; if (this.running) this.t0 = performance.now(); },
+  onOpt() { this.elapsed = 0; if (this.running) this.t0 = performance.now(); },
   extraCtrl() {
     const self = this;
-    const play = el('button', 'cbtn primary', '▶ 開始'); play.id = 'btnPlay'; play.onclick = () => self.toggle();
-    const prev = el('button', 'cbtn', '◀ 上一步'); prev.onclick = () => self.goto(Math.max(0, self.si - 1));
-    const next = el('button', 'cbtn brand', '下一步 ▶'); next.onclick = () => self.goto(Math.min(EX_STEPS.length - 1, self.si + 1));
+    const play = el('button', 'cbtn primary', '▶︎ 開始'); play.id = 'btnPlay'; play.onclick = () => self.toggle();
+    const prev = el('button', 'cbtn', '◀︎ 上一步'); prev.onclick = () => self.goto(Math.max(0, self.si - 1));
+    const next = el('button', 'cbtn brand', '下一步 ▶︎'); next.onclick = () => self.goto(Math.min(EX_STEPS.length - 1, self.si + 1));
     return [prev, play, next];
   }
 };
 
-const ORDER = ['odd', 'stroop', 'gap', 'amsler', 'disease', 'quiz', 'count', 'exercise'];
+/* 首頁分類 */
+const CATS = [
+  { cls: 'c-eye', tag: '眼', name: '視力・護眼', desc: '眼睛本身看得清不清楚、常見眼疾與日常護眼。', modes: ['gap', 'amsler', 'disease', 'illusion', 'quiz', 'exercise'] },
+  { cls: 'c-per', tag: '腦', name: '視知覺', desc: '眼睛看到之後，大腦怎麼分辨、比較、追蹤。', modes: ['odd', 'stroop', 'count', 'cups'] },
+  { cls: 'c-hand', tag: '手', name: '手眼協調', desc: '看到、判斷位置、再動手點。觸控螢幕或平板最好玩。', modes: ['bubbles', 'trail'] }
+];
 
 /* =====================================================================
    引擎
@@ -746,8 +1027,14 @@ const setStageH = () => { const h = stage.clientHeight; if (h > 100) document.do
 if (window.ResizeObserver) new ResizeObserver(setStageH).observe(stage); window.addEventListener('resize', setStageH);
 
 function buildHome() {
-  const t = $('#tiles'); t.innerHTML = '';
-  ORDER.forEach(id => { const m = MODES[id]; const b = el('button', 'tile', `<div class="ico">${m.ico}</div><div><b>${m.name}</b><small>${m.desc}</small></div>`); b.onclick = () => startMode(id); t.appendChild(b); });
+  const box = $('#cats'); box.innerHTML = '';
+  CATS.forEach(c => {
+    const sec = el('section', c.cls);
+    sec.appendChild(el('div', 'cat', `<h2><span class="tag">${c.tag}</span>${c.name}</h2><p>${c.desc}</p>`));
+    const t = el('div', 'tiles');
+    c.modes.forEach(id => { const m = MODES[id]; const b = el('button', 'tile', `<div class="ico">${icon(id)}</div><div><b>${m.name}</b><small>${m.desc}</small></div>`); b.onclick = () => startMode(id); t.appendChild(b); });
+    sec.appendChild(t); box.appendChild(sec);
+  });
 }
 function startMode(id) {
   if (cur && MODES[cur].stop) MODES[cur].stop();
@@ -777,7 +1064,7 @@ function buildOpts(m) {
   });
 }
 function buildGuide(m) {
-  $('#guideTitle').textContent = '📋 老師小抄：' + m.name;
+  $('#guideTitle').textContent = '老師小抄：' + m.name;
   $('#guideBody').innerHTML = '<ol>' + m.guide.map(g => `<li>${g}</li>`).join('') + '</ol>';
 }
 function buildCtrl(m) {
@@ -805,7 +1092,7 @@ function reveal() { if (!cur || MODES[cur].free || revealed) return; revealed = 
 
 $('#btnHome').onclick = goHome; $('#btnNext').onclick = nextQ; $('#btnPrev').onclick = prevQ; $('#btnReveal').onclick = reveal;
 $('#btnFull').onclick = () => { if (document.fullscreenElement) document.exitFullscreen(); else document.documentElement.requestFullscreen && document.documentElement.requestFullscreen(); };
-$('#btnGuide').onclick = () => { const g = $('#guide'); g.classList.toggle('open'); $('#btnGuide').classList.toggle('active', g.classList.contains('open')); if (!cur) { $('#guideTitle').textContent = '📋 老師小抄'; $('#guideBody').innerHTML = '<ol><li>先選一個玩法，這裡會出現該玩法的帶領步驟與說法。</li><li>建議順序：眼球操暖身 → 找不一樣的字 → 說出顏色 → 數一數 → 看出去的樣子 → 方格表檢查 → 護眼問答 → 缺口比一比。</li><li>每個玩法 5～10 分鐘，中間讓大家閉眼休息一下。</li></ol>'; } };
+$('#btnGuide').onclick = () => { const g = $('#guide'); g.classList.toggle('open'); $('#btnGuide').classList.toggle('active', g.classList.contains('open')); if (!cur) { $('#guideTitle').textContent = '老師小抄'; $('#guideBody').innerHTML = '<ol><li>先選一個玩法，這裡會出現該玩法的帶領步驟與說法。</li><li>建議順序：眼球操暖身 → 找不一樣的字 → 說出顏色 → 數一數 → 杯子追蹤 → 視錯覺 → 看出去的樣子 → 方格表檢查 → 護眼問答 → 缺口比一比；戳泡泡、數字連連看適合分桌輪流到平板或觸控螢幕上玩。</li><li>每個玩法 5～10 分鐘，中間讓大家閉眼休息一下。</li></ol>'; } };
 
 /* ---------- 計分板 ---------- */
 let scores = [];
@@ -837,7 +1124,6 @@ function startTimer(sec) {
   }, 1000);
 }
 $('#btnTimer').onclick = () => {
-  // 每按一次：10 → 20 → 30 → 關
   const t = $('#timer');
   if (timerH) { const i = TIMER_SEQ.indexOf(+t.dataset.sec); if (i < TIMER_SEQ.length - 1) { t.dataset.sec = TIMER_SEQ[i + 1]; startTimer(TIMER_SEQ[i + 1]); } else { clearInterval(timerH); timerH = null; t.classList.add('hidden'); t.dataset.sec = ''; } }
   else { t.dataset.sec = 10; startTimer(10); }
@@ -850,8 +1136,8 @@ document.addEventListener('keydown', e => {
   if (!cur) return;
   const m = MODES[cur];
   if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); if (m.free) { m.toggle && m.toggle(); } else if (!revealed) reveal(); else nextQ(); }
-  else if (e.key === 'ArrowRight') { e.preventDefault(); if (m.free) m.goto(Math.min(EX_STEPS.length - 1, m.si + 1)); else nextQ(); }
-  else if (e.key === 'ArrowLeft') { e.preventDefault(); if (m.free) m.goto(Math.max(0, m.si - 1)); else prevQ(); }
+  else if (e.key === 'ArrowRight') { e.preventDefault(); if (m.free) { m.goto && m.goto(Math.min(EX_STEPS.length - 1, m.si + 1)); } else nextQ(); }
+  else if (e.key === 'ArrowLeft') { e.preventDefault(); if (m.free) { m.goto && m.goto(Math.max(0, m.si - 1)); } else prevQ(); }
   else if (e.key === 'Escape') goHome();
   else if (e.key === 'f' || e.key === 'F') $('#btnFull').click();
   else if (e.key === 't' || e.key === 'T') toggleTeams();
