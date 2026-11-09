@@ -12,8 +12,8 @@
   --ok:#15803D; --bad:#DC2626; --line:#E5DCC9;
   --radius:18px; --shadow:0 6px 20px rgba(60,40,0,.10);
   --head-h:64px;
-  /* 舞台可用高度：扣掉標題列、選項列、底部按鈕列 */
-  --stage-h:calc(100dvh - var(--head-h) - 150px);
+  /* 舞台實際可用高度，由 JS 量測後寫入（此為預設值） */
+  --stage-h:calc(100dvh - 130px);
 }
 *{box-sizing:border-box}
 html,body{margin:0;height:100%;overflow-x:hidden}
@@ -28,9 +28,10 @@ button:focus-visible{outline:4px solid var(--accent); outline-offset:2px}
 
 /* ---------- header ---------- */
 header{
-  height:var(--head-h); display:flex; align-items:center; gap:10px; padding:0 14px;
+  min-height:var(--head-h); display:flex; flex-wrap:wrap; align-items:center; gap:6px 10px; padding:6px 14px;
   background:var(--brand); color:#fff; position:sticky; top:0; z-index:20;
 }
+header .btns{display:flex; gap:8px; align-items:center; margin-left:auto}
 header .title{font-weight:800; font-size:24px; letter-spacing:1px; display:flex; align-items:center; gap:8px; min-width:0}
 header .title span.mode{font-weight:600; font-size:20px; opacity:.95; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
 header .spacer{flex:1}
@@ -61,8 +62,12 @@ main{flex:1; display:flex; flex-direction:column; min-height:0}
 
 /* ---------- game view ---------- */
 #game{flex:1; display:flex; flex-direction:column; min-height:0}
-#optbar{display:flex; flex-wrap:wrap; gap:10px 18px; align-items:center; padding:8px 16px; background:#F6ECD6; border-bottom:1px solid var(--line); font-size:18px}
+#optbar{display:flex; flex-wrap:wrap; gap:6px 14px; align-items:center; font-size:16px; margin-left:8px}
 #optbar:empty{display:none}
+header .opt .lbl{color:rgba(255,255,255,.85)}
+header .seg{background:rgba(255,255,255,.14); border:none}
+header .seg button{color:rgba(255,255,255,.9); font-size:16px; padding:4px 10px}
+header .seg button.on{background:#fff; color:var(--brand)}
 .opt{display:flex; align-items:center; gap:6px}
 .opt .lbl{color:var(--muted); font-weight:700; white-space:nowrap}
 .seg{display:inline-flex; background:#fff; border-radius:12px; padding:3px; border:1px solid var(--line)}
@@ -83,14 +88,14 @@ main{flex:1; display:flex; flex-direction:column; min-height:0}
 @media (prefers-reduced-motion:reduce){*{animation:none !important; transition:none !important}}
 
 /* bottom control bar */
-#ctrl{display:flex; flex-wrap:wrap; gap:10px; justify-content:center; align-items:center; padding:10px 14px 14px; background:#fff; border-top:2px solid var(--line); position:sticky; bottom:0; z-index:15}
-.cbtn{padding:14px 26px; font-size:22px; font-weight:800; border-radius:16px; background:#EEE8DA; color:var(--ink); min-width:120px}
+#ctrl{display:flex; flex-wrap:wrap; gap:8px; justify-content:center; align-items:center; padding:6px 10px 8px; background:#fff; border-top:2px solid var(--line); position:sticky; bottom:0; z-index:15}
+.cbtn{padding:8px 18px; font-size:18px; font-weight:800; border-radius:12px; background:#EEE8DA; color:var(--ink)}
 .cbtn.primary{background:var(--accent); color:#1b1b1b}
 .cbtn.primary:hover{background:#FBBF24}
 .cbtn.brand{background:var(--brand); color:#fff}
 .cbtn.brand:hover{background:var(--brand-dark)}
 .cbtn:disabled{opacity:.4; cursor:default}
-#qnum{font-weight:700; color:var(--muted); font-size:19px; min-width:70px; text-align:center}
+#qnum{font-weight:700; color:var(--muted); font-size:16px; min-width:60px; text-align:center}
 
 /* timer overlay */
 #timer{position:fixed; right:18px; top:calc(var(--head-h) + 12px); z-index:18; background:#1B2430; color:#fff; font-weight:900; font-size:56px; line-height:1; padding:10px 22px; border-radius:18px; box-shadow:var(--shadow); min-width:110px; text-align:center}
@@ -119,7 +124,7 @@ main{flex:1; display:flex; flex-direction:column; min-height:0}
 #guide .say{background:#FFF1D6; border-left:5px solid var(--accent); padding:8px 12px; border-radius:8px; margin:6px 0; font-size:18px}
 
 /* ---------- mode: odd ---------- */
-.oddgrid{display:grid; gap:min(1.2vw,12px); width:min(92vw, 900px, calc(var(--stage-h) - 150px)); aspect-ratio:1}
+.oddgrid{display:grid; gap:min(1.2vw,12px); width:min(92vw, 900px, calc(var(--stage-h) - 130px)); aspect-ratio:1}
 .oddgrid .cell{position:relative; background:#fff; border-radius:12px; box-shadow:var(--shadow); display:flex; align-items:center; justify-content:center; font-weight:700; line-height:1; min-width:0; user-select:none}
 .oddgrid .cell i{position:absolute; left:6px; top:3px; font-style:normal; font-size:clamp(12px,1.4vw,18px); color:#B7AC95; font-weight:600}
 .oddgrid .cell.hit{animation:blink 1s infinite; background:#FEF2F2; color:var(--bad)}
@@ -127,10 +132,10 @@ main{flex:1; display:flex; flex-direction:column; min-height:0}
 /* ---------- mode: stroop ---------- */
 .words{display:flex; flex-wrap:wrap; gap:clamp(14px,3vw,40px); justify-content:center; align-items:center}
 .word{font-weight:900; line-height:1; text-shadow:0 2px 0 rgba(0,0,0,.08)}
-.words.n1 .word{font-size:min(40vw,calc((var(--stage-h) - 150px) * .85))}
-.words.n2 .word{font-size:min(26vw,calc((var(--stage-h) - 150px) * .7))}
-.words.n4 .word{font-size:min(17vw,calc((var(--stage-h) - 150px) * .55))}
-.words.n6 .word{font-size:min(13vw,calc((var(--stage-h) - 150px) * .45))}
+.words.n1 .word{font-size:min(40vw,calc((var(--stage-h) - 130px) * .85))}
+.words.n2 .word{font-size:min(26vw,calc((var(--stage-h) - 130px) * .7))}
+.words.n4 .word{font-size:min(17vw,calc((var(--stage-h) - 130px) * .55))}
+.words.n6 .word{font-size:min(13vw,calc((var(--stage-h) - 130px) * .45))}
 .autobar{position:absolute; left:0; right:0; bottom:0; height:10px; background:#eee}
 .autobar i{display:block; height:100%; background:var(--accent); width:0}
 
@@ -142,7 +147,7 @@ main{flex:1; display:flex; flex-direction:column; min-height:0}
 
 /* ---------- mode: amsler ---------- */
 .amwrap{display:flex; flex-wrap:wrap; gap:22px; align-items:center; justify-content:center; width:100%}
-.amwrap svg{width:min(88vw,calc(var(--stage-h) - 170px)); height:min(88vw,calc(var(--stage-h) - 170px)); background:#fff; border-radius:8px; box-shadow:var(--shadow)}
+.amwrap svg{width:min(88vw,calc(var(--stage-h) - 150px)); height:min(88vw,calc(var(--stage-h) - 150px)); background:#fff; border-radius:8px; box-shadow:var(--shadow)}
 .steps{max-width:460px; font-size:clamp(18px,2.2vw,26px)}
 .steps ol{padding-left:1.3em; margin:0}
 .steps li{margin:6px 0}
@@ -152,12 +157,12 @@ main{flex:1; display:flex; flex-direction:column; min-height:0}
 .choices button.dim{opacity:.4}
 
 /* ---------- mode: disease ---------- */
-.scenewrap{position:relative; width:min(94vw,1000px,calc((var(--stage-h) - 180px) * 1.6)); aspect-ratio:8/5; border-radius:18px; overflow:hidden; box-shadow:var(--shadow); background:#000}
+.scenewrap{position:relative; width:min(94vw,1100px,calc((var(--stage-h) - 160px) * 1.6)); aspect-ratio:8/5; border-radius:18px; overflow:hidden; box-shadow:var(--shadow); background:#000}
 .scenewrap svg{position:absolute; inset:0; width:100%; height:100%}
 .scenewrap .ov{position:absolute; inset:0; pointer-events:none}
 
 /* ---------- mode: count ---------- */
-.field{position:relative; width:min(94vw,1000px,calc((var(--stage-h) - 170px) * 1.5)); aspect-ratio:3/2; background:#fff; border-radius:18px; box-shadow:var(--shadow); overflow:hidden}
+.field{position:relative; width:min(94vw,1100px,calc((var(--stage-h) - 150px) * 1.5)); aspect-ratio:3/2; background:#fff; border-radius:18px; box-shadow:var(--shadow); overflow:hidden}
 .field .sh{position:absolute; width:9%; aspect-ratio:1; display:flex; align-items:center; justify-content:center}
 .field .sh svg{width:100%; height:100%; overflow:visible}
 .field .sh.hit svg{filter:drop-shadow(0 0 0 #000)}
@@ -178,20 +183,23 @@ main{flex:1; display:flex; flex-direction:column; min-height:0}
 .warn{color:var(--bad); font-weight:700; font-size:18px; text-align:center}
 
 /* ---------- responsive ---------- */
+@media (max-width:980px){
+  #optbar{order:3; flex-basis:100%; justify-content:center; margin-left:0}
+}
 @media (max-width:640px){
   body{font-size:18px}
   header .title{font-size:19px; white-space:nowrap}
   header .title span.mode{display:none}
   .hbtn{padding:7px 9px; font-size:18px}
   .hbtn .t{display:none}
-  .cbtn{padding:12px 16px; font-size:19px; min-width:0}
+  .cbtn{padding:8px 12px; font-size:17px}
   #timer{font-size:40px; padding:8px 14px}
 }
 @media (max-height:460px) and (min-width:640px){
   :root{--head-h:50px}
   header .title{font-size:19px}
-  .cbtn{padding:8px 16px; font-size:18px}
-  #ctrl{padding:6px}
+  .cbtn{padding:6px 14px; font-size:17px}
+  #ctrl{padding:4px}
 }
 </style>
 </head>
@@ -199,12 +207,14 @@ main{flex:1; display:flex; flex-direction:column; min-height:0}
 
 <header>
   <div class="title">👁️ 護眼同樂會 <span class="mode" id="modeName"></span></div>
-  <div class="spacer"></div>
+  <div id="optbar"></div>
+  <div class="btns">
   <button class="hbtn" id="btnHome" aria-label="首頁">🏠<span class="t"> 首頁</span></button>
   <button class="hbtn" id="btnTeams" aria-label="計分">🏆<span class="t"> 計分</span></button>
   <button class="hbtn" id="btnTimer" aria-label="倒數">⏱<span class="t"> 倒數</span></button>
   <button class="hbtn" id="btnGuide" aria-label="老師小抄">📋<span class="t"> 老師小抄</span></button>
   <button class="hbtn" id="btnFull" title="全螢幕">⛶</button>
+  </div>
 </header>
 
 <main>
@@ -230,7 +240,6 @@ main{flex:1; display:flex; flex-direction:column; min-height:0}
 
   <!-- ========== 遊戲畫面 ========== -->
   <section id="game" class="hidden">
-    <div id="optbar"></div>
     <div id="stage"></div>
     <div id="ctrl">
       <button class="cbtn" id="btnPrev">◀ 上一題</button>
@@ -455,7 +464,7 @@ MODES.odd = {
       render(st) {
         st.appendChild(el('h2', 'prompt', `哪一格的字不一樣？`));
         const g = el('div', 'oddgrid'); g.style.gridTemplateColumns = `repeat(${size},minmax(0,1fr))`;
-        g.style.fontSize = `calc(min(92vw, 900px, var(--stage-h) - 150px) / ${size} * 0.68)`;
+        g.style.fontSize = `calc(min(92vw, 900px, var(--stage-h) - 130px) / ${size} * 0.68)`;
         for (let i = 0; i < n; i++) { const c = el('div', 'cell', `<i>${i + 1}</i>${i === idx ? pair[1] : pair[0]}`); c.dataset.i = i; g.appendChild(c); }
         st.appendChild(g);
       },
@@ -516,7 +525,7 @@ MODES.gap = {
     return {
       render(st) {
         st.appendChild(el('h2', 'prompt', `缺口在哪一邊？用手比出來！`));
-        const w = el('div', 'gapwrap'); const base = Math.max(120, Math.min(stage.clientWidth * .8, stage.clientHeight - 190)); const sz = Math.round(base * self.sizes[self.level - 1]) + 'px';
+        const w = el('div', 'gapwrap'); const base = Math.max(120, Math.min(stage.clientWidth * .8, stage.clientHeight - 170)); const sz = Math.round(base * self.sizes[self.level - 1]) + 'px';
         w.innerHTML = (S.gap.type === 'E' ? tumblingESVG(d.deg, sz) : landoltSVG(d.deg, sz)) + `<div class="gaplvl">大小：第 ${self.level} 級（共 ${self.sizes.length} 級）</div>`;
         st.appendChild(w);
       },
@@ -733,6 +742,8 @@ const ORDER = ['odd', 'stroop', 'gap', 'amsler', 'disease', 'quiz', 'count', 'ex
    ===================================================================== */
 let cur = null, qs = [], qi = -1, revealed = false;
 const stage = $('#stage');
+const setStageH = () => { const h = stage.clientHeight; if (h > 100) document.documentElement.style.setProperty('--stage-h', h + 'px'); };
+if (window.ResizeObserver) new ResizeObserver(setStageH).observe(stage); window.addEventListener('resize', setStageH);
 
 function buildHome() {
   const t = $('#tiles'); t.innerHTML = '';
@@ -744,13 +755,13 @@ function startMode(id) {
   $('#home').classList.add('hidden'); $('#game').classList.remove('hidden');
   $('#modeName').textContent = '｜' + m.name;
   buildOpts(m); buildGuide(m); buildCtrl(m);
-  stage.innerHTML = '';
+  stage.innerHTML = ''; setStageH();
   if (m.free) { m.start(stage); } else { nextQ(); if (m.start) m.start(); }
   window.scrollTo(0, 0);
 }
 function goHome() {
   if (cur && MODES[cur].stop) MODES[cur].stop();
-  cur = null; $('#game').classList.add('hidden'); $('#home').classList.remove('hidden'); $('#modeName').textContent = '';
+  cur = null; $('#game').classList.add('hidden'); $('#home').classList.remove('hidden'); $('#modeName').textContent = ''; $('#optbar').innerHTML = '';
   $('#guide').classList.remove('open'); $('#btnGuide').classList.remove('active');
 }
 function buildOpts(m) {
