@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>護眼同樂會</title>
-<meta name="description" content="給團體長者一起玩的視力互動遊戲：分成「視力・護眼」「視知覺」「手眼協調」三類共 12 種玩法，適合老師投影帶領。">
+<meta name="description" content="給團體長者一起玩的視力互動遊戲：分成「視力・護眼」「視知覺」「視覺反應」三類共 12 種玩法，全班一起喊答案，適合老師投影帶領。">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@500;700;900&display=swap" rel="stylesheet">
@@ -79,7 +79,7 @@ main{flex:1; display:flex; flex-direction:column; min-height:0}
 .tile small{display:block; font-size:16.5px; color:var(--grey); line-height:1.45}
 .c-eye .tile .ico,.c-eye .tag{background:var(--orange)} .c-eye .tag{color:#fff}
 .c-per .tile .ico,.c-per .tag{background:var(--blue)} .c-per .tag{color:#fff}
-.c-hand .tile .ico,.c-hand .tag{background:var(--green)} .c-hand .tag{color:#fff}
+.c-react .tile .ico,.c-react .tag{background:var(--green)} .c-react .tag{color:#fff}
 .howto{margin-top:34px; background:var(--yellow-soft); border:var(--b3); border-radius:var(--radius); box-shadow:var(--sh5); padding:20px 24px; font-size:18.5px}
 .howto h2{margin:0 0 8px; font-size:24px; font-weight:900}
 .howto ul{margin:0; padding-left:1.2em}
@@ -103,7 +103,7 @@ main{flex:1; display:flex; flex-direction:column; min-height:0}
 .answer .exp{display:block; font-size:.62em; font-weight:700; color:var(--grey); margin-top:6px; line-height:1.45}
 @keyframes pop{from{transform:scale(.9); opacity:0} to{transform:none; opacity:1}}
 @keyframes blink{0%,100%{box-shadow:0 0 0 5px var(--orange), var(--sh3)} 50%{box-shadow:0 0 0 12px rgba(241,90,41,.35), var(--sh3)}}
-@keyframes shake{0%,100%{transform:translate(-50%,-50%) translateX(0)} 25%{transform:translate(-50%,-50%) translateX(-8px)} 75%{transform:translate(-50%,-50%) translateX(8px)}}
+@keyframes shake{0%,100%{transform:none} 25%{transform:translateX(-8px)} 75%{transform:translateX(8px)}}
 @media (prefers-reduced-motion:reduce){*{animation:none !important; transition:none !important}}
 
 /* 底部控制列 */
@@ -207,24 +207,22 @@ main{flex:1; display:flex; flex-direction:column; min-height:0}
 .bigbtn{padding:14px 34px; font-size:clamp(20px,2.6vw,28px); font-weight:900; background:var(--yellow); border:var(--b3); box-shadow:var(--sh5); border-radius:999px; margin-top:8px}
 .bigbtn:active{transform:translate(3px,3px); box-shadow:2px 2px 0 var(--line)}
 
-/* ---------- mode: bubbles ---------- */
-.arena{position:relative; flex:1; width:100%; min-height:40vh}
-.bubblearena{position:relative; width:min(96vw,1200px); height:calc(var(--stage-h) - 120px); min-height:240px; background:#fff; border:var(--b3); box-shadow:var(--sh5); border-radius:16px; overflow:hidden; touch-action:manipulation}
-.bubble{position:absolute; width:var(--bs); height:var(--bs); border-radius:50%; border:var(--b3); background:radial-gradient(circle at 35% 30%, #fff 0 12%, var(--blue) 13%); display:grid; place-items:center; font-size:calc(var(--bs) * .5); cursor:pointer; animation:pop .25s ease; user-select:none; box-shadow:var(--sh3)}
-.bubble.gold{background:radial-gradient(circle at 35% 30%, #fff 0 12%, var(--yellow) 13%)}
-.bubble.popping{animation:popout .25s ease forwards; pointer-events:none}
-@keyframes popout{to{transform:scale(1.6); opacity:0}}
-.hud{display:flex; gap:18px; justify-content:center; align-items:center; font-weight:900; font-size:clamp(20px,2.6vw,30px); margin-bottom:8px; flex-wrap:wrap}
+/* ---------- mode: flash ---------- */
+.flashgrid{display:grid; gap:min(1.2vw,12px); width:min(92vw, 900px, calc(var(--stage-h) - 230px)); aspect-ratio:1}
+.flashgrid .fc{position:relative; background:#fff; border:var(--b2); border-radius:12px; box-shadow:var(--sh3); display:grid; place-items:center; font-weight:900; color:var(--grey); font-size:var(--fs); user-select:none}
+.flashgrid .fc .tgt{position:absolute; inset:10%; border-radius:50%; background:var(--yellow); border:var(--b3); box-shadow:var(--sh3); display:grid; place-items:center; font-size:calc(var(--fs) * .9); color:var(--ink); line-height:1}
+.flashgrid .fc.hit{background:var(--orange); color:#fff}
+.flashgrid .fc .ord{position:absolute; left:5%; top:5%; min-width:1.5em; height:1.5em; padding:0 .25em; border-radius:999px; background:#fff; border:2px solid var(--line); display:grid; place-items:center; font-style:normal; font-size:calc(var(--fs) * .4); color:var(--ink)}
+.hud{display:flex; gap:18px; justify-content:center; align-items:center; font-weight:900; font-size:clamp(20px,2.6vw,30px); margin-bottom:10px; flex-wrap:wrap}
 .hud span{border:var(--b2); border-radius:999px; padding:4px 18px; background:#fff; box-shadow:var(--sh3)}
 .hud span.time{background:var(--yellow)}
 
-/* ---------- mode: trail ---------- */
-.trailarena{position:relative; width:min(96vw,1200px); height:calc(var(--stage-h) - 120px); min-height:240px; background:#fff; border:var(--b3); box-shadow:var(--sh5); border-radius:16px; overflow:hidden; touch-action:manipulation}
-.trailarena svg{position:absolute; inset:0; width:100%; height:100%; pointer-events:none}
-.node{position:absolute; width:var(--ns); height:var(--ns); border-radius:50%; border:var(--b3); background:#fff; display:grid; place-items:center; font-weight:900; font-size:calc(var(--ns) * .46); cursor:pointer; transform:translate(-50%,-50%); user-select:none; box-shadow:var(--sh3)}
-.node.done{background:var(--green); color:#fff}
-.node.next{background:var(--yellow)}
-.node.wrong{animation:shake .3s; background:var(--red); color:#fff}
+/* ---------- mode: schulte ---------- */
+.schulte{display:grid; gap:min(1vw,10px); width:min(92vw, 900px, calc(var(--stage-h) - 140px)); aspect-ratio:1}
+.schulte .sc{background:#fff; border:var(--b2); border-radius:12px; box-shadow:var(--sh3); display:grid; place-items:center; font-weight:900; font-size:var(--fs); cursor:pointer; user-select:none; touch-action:manipulation; line-height:1}
+.schulte .sc:hover{background:var(--yellow-soft)}
+.schulte .sc.done{background:var(--green); color:#fff}
+.schulte .sc.wrong{animation:shake .3s; background:var(--red); color:#fff}
 
 /* ---------- mode: exercise ---------- */
 .exwrap{position:relative; width:100%; height:100%; min-height:60vh; display:flex; flex-direction:column; align-items:center}
@@ -280,7 +278,7 @@ main{flex:1; display:flex; flex-direction:column; min-height:0}
       <div>
         <span class="pill">阿公阿嬤一起玩</span>
         <h1 style="margin-top:12px">眼睛顧好不吃虧，<br>一起來玩<span class="mark">護眼遊戲</span>！</h1>
-        <p>老師把畫面投影出來，大家一起看、一起喊答案。遊戲分成三類：<b>視力・護眼</b>（眼睛本身與眼疾）、<b>視知覺</b>（眼睛看到後大腦怎麼判斷）、<b>手眼協調</b>（看到再動手）。</p>
+        <p>老師把畫面投影出來，大家一起看、一起喊答案。遊戲分成三類：<b>視力・護眼</b>（眼睛本身與眼疾）、<b>視知覺</b>（眼睛看到後大腦怎麼判斷）、<b>視覺反應</b>（閃一下在哪？大家一起喊）。每一種都是全班一起看、一起喊，老師一個人操作就好。</p>
       </div>
     </div>
     <div id="cats"></div>
@@ -289,7 +287,7 @@ main{flex:1; display:flex; flex-direction:column; min-height:0}
       <ul>
         <li>點選玩法後，畫面下方有「揭曉答案」與「下一題」；鍵盤 <span class="kbd">空白鍵</span> 也可以揭曉／下一題，<span class="kbd">←</span> <span class="kbd">→</span> 切換題目。</li>
         <li>右上角「計分」分桌計分（2～6 桌）、「倒數」10／20／30 秒倒數、「老師小抄」有每個玩法的帶領提示與說法。</li>
-        <li>按 右上角全螢幕按鈕或 <span class="kbd">F</span> 全螢幕，投影時字會更大。手眼協調類在觸控螢幕或平板上玩最順手，用滑鼠也可以。</li>
+        <li>按右上角全螢幕按鈕或 <span class="kbd">F</span> 全螢幕，投影時字會更大。長輩不需要碰螢幕，用喊的、用手比就能參與。</li>
         <li>遊戲只是互動體驗，<b>不是正式的視力檢查</b>。看不清楚、直線變彎、閃光或黑影變多，請到眼科檢查。</li>
       </ul>
     </div>
@@ -338,7 +336,7 @@ const el = (tag, cls, html) => { const e = document.createElement(tag); if (cls)
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 
 /* ---------- settings (remembered in this browser) ---------- */
-const DEFAULTS = { odd: { level: 2 }, stroop: { n: 1, auto: 0 }, gap: { type: 'C', dirs: 4 }, amsler: { mode: 'steps' }, disease: {}, quiz: { type: 'all' }, count: { n: 16 }, exercise: { speed: 1 }, illusion: {}, cups: { n: 3, speed: 1 }, bubbles: { size: 2, dur: 30 }, trail: { n: 10 }, teams: 4 };
+const DEFAULTS = { odd: { level: 2 }, stroop: { n: 1, auto: 0 }, gap: { type: 'C', dirs: 4 }, amsler: { mode: 'steps' }, disease: {}, quiz: { type: 'all' }, count: { n: 16 }, exercise: { speed: 1 }, illusion: {}, cups: { n: 3, speed: 1 }, flash: { size: 3, dur: 1, cnt: 1 }, schulte: { size: 3 }, teams: 4 };
 let S;
 try { S = Object.assign({}, DEFAULTS, JSON.parse(localStorage.getItem('eyegame-settings') || '{}')); } catch (e) { S = Object.assign({}, DEFAULTS); }
 for (const k in DEFAULTS) if (typeof DEFAULTS[k] === 'object') S[k] = Object.assign({}, DEFAULTS[k], S[k] || {});
@@ -468,8 +466,8 @@ const ICONS = {
   stroop: '<path d="M24 8a16 16 0 1 0 6 30c3-1 2-5 5-5h3a4 4 0 0 0 2-7A16 16 0 0 0 24 8z"/><circle cx="16" cy="22" r="2.5" fill="currentColor"/><circle cx="23" cy="15" r="2.5" fill="currentColor"/><circle cx="32" cy="17" r="2.5" fill="currentColor"/>',
   count: '<circle cx="14" cy="16" r="7"/><path d="M27 23l7-12 7 12z"/><rect x="18" y="29" width="13" height="13"/>',
   cups: '<path d="M12 12h22l-3 24H15z"/><path d="M9 9h28"/><circle cx="38" cy="40" r="4"/>',
-  bubbles: '<circle cx="18" cy="20" r="11"/><circle cx="34" cy="32" r="8"/><circle cx="33" cy="12" r="4"/><path d="M12 17a7 7 0 0 1 5-5"/>',
-  trail: '<circle cx="12" cy="36" r="5"/><circle cx="24" cy="14" r="5"/><circle cx="37" cy="32" r="5"/><path d="M15 32l6-14M27 18l7 10"/>'
+  flash: '<path d="M27 5 11 27h11l-2 16 16-22H25z"/>',
+  schulte: '<rect x="6" y="6" width="26" height="26"/><path d="M6 19h26M19 6v26"/><circle cx="35" cy="35" r="6"/><path d="M39.5 39.5 45 45"/>'
 };
 const icon = id => `<svg class="ic" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONS[id] || ''}</svg>`;
 document.querySelectorAll('[data-ico]').forEach(e => e.insertAdjacentHTML('afterbegin', icon(e.dataset.ico)));
@@ -840,95 +838,85 @@ MODES.cups = {
   }
 };
 
-/* ---------- 戳泡泡（手眼協調） ---------- */
-MODES.bubbles = {
-  name: '戳泡泡', desc: '泡泡冒出來就戳破它！限時挑戰，看看能戳破幾個。適合觸控螢幕或平板。',
-  free: true,
-  opts: [{ key: 'size', label: '泡泡', values: [[3, '大'], [2, '中'], [1, '小']] }, { key: 'dur', label: '時間', values: [[30, '30 秒'], [45, '45 秒'], [60, '60 秒']] }],
-  guide: ['說明：「泡泡冒出來，用手指（或滑鼠）點一下就會破。時間到看看戳破幾個！」', '在觸控螢幕或平板上玩最好；投影時可請長輩輪流上來點，或老師操作滑鼠、大家喊「左上！右下！」指揮。', '黃色星星泡泡算兩分；沒戳到的泡泡幾秒後會自己消失，不扣分。', '這是「手眼協調」訓練：看到→判斷位置→伸手點，和拿杯子、按電梯、投幣是同一種能力。', '先用「大」泡泡、30 秒讓大家熟悉，再慢慢換小。站著玩時請注意腳步安全。'],
-  timer: null, spawn: null, score: 0, left: 0, running: false,
-  start(st) {
-    const self = this; self.running = false; self.score = 0; self.left = S.bubbles.dur;
-    const w = el('div', 'exwrap'); w.style.minHeight = '0';
-    w.appendChild(el('div', 'hud', `<span>戳破 <b id="bScore">0</b> 個</span><span class="time">剩 <b id="bTime">${self.left}</b> 秒</span>`));
-    const arena = el('div', 'bubblearena'); arena.id = 'bArena'; w.appendChild(arena);
-    arena.appendChild(el('div', 'cups-msg', '按下方「開始」就會冒泡泡'));
-    st.appendChild(w);
-    const p = $('#btnPlay'); if (p) { p.textContent = '▶︎ 開始'; p.disabled = false; }
-  },
-  stop() { this.running = false; clearInterval(this.timer); clearTimeout(this.spawn); },
-  toggle() {
-    if (this.running) return;
-    const arena = $('#bArena'); if (!arena) return; arena.innerHTML = '';
-    this.running = true; this.score = 0; this.left = S.bubbles.dur; $('#bScore').textContent = 0; $('#bTime').textContent = this.left; $('#btnPlay').textContent = '進行中…'; $('#btnPlay').disabled = true;
-    this.timer = setInterval(() => { this.left--; $('#bTime').textContent = this.left; if (this.left <= 3 && this.left > 0) beep(660, .08); if (this.left <= 0) this.finish(); }, 1000);
-    this.spawnOne();
-  },
-  spawnOne() {
-    if (!this.running) return;
-    const arena = $('#bArena'); const sz = [0, 70, 110, 160][S.bubbles.size]; const bs = Math.min(sz, arena.clientHeight * .4);
-    const gold = Math.random() < .2;
-    const b = el('div', 'bubble' + (gold ? ' gold' : ''), gold ? '★' : ''); b.style.setProperty('--bs', bs + 'px');
-    b.style.left = rnd(Math.max(1, arena.clientWidth - bs - 10)) + 'px'; b.style.top = rnd(Math.max(1, arena.clientHeight - bs - 10)) + 'px';
-    const life = setTimeout(() => { if (b.isConnected) { b.remove(); } }, 2600 + 1400 * (4 - S.bubbles.size));
-    b.addEventListener('pointerdown', e => { e.preventDefault(); if (!this.running) return; clearTimeout(life); this.score += gold ? 2 : 1; $('#bScore').textContent = this.score; b.classList.add('popping'); beep(gold ? 1320 : 988, .1); setTimeout(() => b.remove(), 250); });
-    arena.appendChild(b);
-    const gap = 650 + rnd(500) + (S.bubbles.size === 3 ? 300 : 0);
-    this.spawn = setTimeout(() => this.spawnOne(), gap);
-  },
-  finish() {
-    this.running = false; clearInterval(this.timer); clearTimeout(this.spawn); const arena = $('#bArena'); if (!arena) return;
-    arena.innerHTML = ''; const a = el('div', 'answer', `時間到！戳破 ${this.score} 個<span class="exp">看到→判斷位置→伸手點，就是手眼協調。按「再玩一次」換下一位。</span>`); a.style.cssText = 'position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); width:max-content; max-width:90%'; arena.appendChild(a);
-    $('#btnPlay').textContent = '▶︎ 再玩一次'; $('#btnPlay').disabled = false; beep(1046, .3);
-  },
-  onOpt() { this.stop(); const st = $('#stage'); st.innerHTML = ''; this.start(st); },
-  extraCtrl() {
-    const self = this; const play = el('button', 'cbtn primary', '▶︎ 開始'); play.id = 'btnPlay'; play.onclick = () => self.toggle();
-    return [play];
+/* ---------- 眼明手快（視覺反應） ---------- */
+MODES.flash = {
+  name: '眼明手快', desc: '目標只閃一下，出現在幾號格？全班一起喊號碼，或用手指出方向。',
+  opts: [{ key: 'size', label: '格數', values: [[2, '2×2'], [3, '3×3'], [4, '4×4']] }, { key: 'dur', label: '顯示', values: [[1.5, '1.5 秒'], [1, '1 秒'], [0.5, '0.5 秒']] }, { key: 'cnt', label: '幾個', values: [[1, '1 個'], [2, '2 個'], [3, '3 個']] }],
+  guide: ['說明：「等一下黃色的星星會在其中一格閃一下，請大家看清楚它在幾號格，一起喊出來！」', '先用 2×2、顯示 1.5 秒、1 個讓大家熟悉；再慢慢換 3×3、縮短顯示時間。', '「幾個」選 2 或 3 時，星星會依序閃在不同格，請大家按順序喊（例如「5、2」），同時練到短期記憶。', '按「開始」前先倒數「三、二、一」，提醒大家眼睛看著螢幕中央、不要眨眼。', '這是視覺反應與周邊視野訓練：眼睛盯中間也要看得到旁邊，跟過馬路注意兩側來車一樣。'],
+  make() {
+    const size = S.flash.size, n = size * size, cnt = S.flash.cnt, dur = S.flash.dur;
+    const seq = []; while (seq.length < cnt) { const c = rnd(n); if (!seq.includes(c)) seq.push(c); }
+    const q = { shown: false, running: false, cells: [] };
+    return {
+      render(st) {
+        st.appendChild(el('h2', 'prompt', cnt > 1 ? `星星會閃 ${cnt} 次，依序出現在幾號格？` : `星星閃一下，出現在幾號格？`));
+        const g = el('div', 'flashgrid'); g.style.gridTemplateColumns = `repeat(${size},minmax(0,1fr))`;
+        g.style.setProperty('--fs', `calc(min(92vw, 900px, var(--stage-h) - 230px) / ${size} * 0.42)`);
+        q.cells = [];
+        for (let i = 0; i < n; i++) { const c = el('div', 'fc', `<span>${i + 1}</span>`); g.appendChild(c); q.cells.push(c); }
+        st.appendChild(g);
+        const msg = el('div', 'cups-msg', q.shown ? '出現在幾號？大家一起喊！' : '眼睛看著螢幕中央，準備…'); st.appendChild(msg);
+        if (!q.shown) {
+          const btn = el('button', 'bigbtn', '▶︎ 開始'); st.appendChild(btn);
+          btn.onclick = async () => {
+            if (q.running) return; q.running = true; btn.disabled = true; btn.style.opacity = .4;
+            await sleep(600);
+            for (const c of seq) {
+              const t = el('div', 'tgt', '★'); q.cells[c].appendChild(t); beep(1046, .08);
+              await sleep(dur * 1000); t.remove(); await sleep(450);
+            }
+            q.shown = true; q.running = false; msg.textContent = '出現在幾號？大家一起喊！'; btn.remove();
+          };
+        }
+      },
+      reveal(st) {
+        seq.forEach((c, i) => { q.cells[c].classList.add('hit'); if (cnt > 1) q.cells[c].appendChild(el('i', 'ord', i + 1)); });
+        st.appendChild(el('div', 'answer', `答案：${seq.map(c => c + 1).join(' → ')}<span class="exp">眼睛盯著中間，旁邊閃一下也要看得到，這就是周邊視野與視覺反應。</span>`));
+      }
+    };
   }
 };
 
-/* ---------- 數字連連看（手眼協調＋視覺搜尋） ---------- */
-MODES.trail = {
-  name: '數字連連看', desc: '依照 1→2→3 的順序點數字，點對了會連成一條線。看看幾秒完成！',
+/* ---------- 數字搜尋（舒爾特方格，全班一起唸） ---------- */
+MODES.schulte = {
+  name: '數字搜尋', desc: '打亂的數字表，全班從 1 開始依序找、大聲唸出來；老師點一下確認，看看幾秒唸完。',
   free: true,
-  opts: [{ key: 'n', label: '數字', values: [[8, '8 個'], [12, '12 個'], [16, '16 個']] }],
-  guide: ['說明：「請從 1 開始，依照順序點 2、3、4…，點對會變綠色並連成線。」', '黃色的圓圈就是下一個要點的數字，不確定時可以先用眼睛找，再動手。', '投影時可請長輩上來點，或老師拿滑鼠當「手」，全班用眼睛找、用嘴巴指揮：「3 在左下角！」', '這同時訓練視覺搜尋（在一堆數字裡找目標）和手眼協調，是常用的認知與視覺評估方式。', '完成時間只是參考，不比快，重點是「找得到、點得準」。'],
-  nodes: [], next: 1, t0: 0, timer: null,
+  opts: [{ key: 'size', label: '格數', values: [[3, '3×3'], [4, '4×4'], [5, '5×5']] }],
+  guide: ['說明：「表格裡的數字是打亂的，請大家從 1 開始依序找出來，找到就一起大聲唸，並說它在哪裡（左上、中間…）。」', '老師依大家唸的順序點一下該格，點對會變綠色；點到 1 就自動開始計時，唸完顯示總秒數。', '先用 3×3 示範，再換 4×4；5×5 很有挑戰，可分桌輪流唸、比較時間，但不要給壓力。', '提醒大家「頭不動、眼睛動」，用眼睛掃整張表找數字，這是視覺搜尋與專注力訓練（舒爾特方格）。', '延伸：藥盒、月曆、公車時刻表都是一堆數字，練習「找得到、看得準」很實用。'],
+  next: 1, t0: 0, timer: null, running: false, cells: [], n: 0,
   start(st) {
-    const self = this; self.next = 1; self.t0 = 0; clearInterval(self.timer);
-    const n = S.trail.n;
+    const self = this; self.stop(); self.next = 1; self.t0 = 0; self.running = false;
+    const size = S.schulte.size, n = size * size; self.n = n;
     const w = el('div', 'exwrap'); w.style.minHeight = '0';
-    w.appendChild(el('div', 'hud', `<span>下一個：<b id="tNext">1</b></span><span class="time"><b id="tTime">0.0</b> 秒</span>`));
-    const arena = el('div', 'trailarena'); arena.innerHTML = '<svg id="tLines"></svg>'; w.appendChild(arena); st.appendChild(w);
-    const ns = Math.max(54, Math.min(96, Math.min(arena.clientWidth, arena.clientHeight) / (n <= 8 ? 5 : n <= 12 ? 6 : 7)));
-    arena.style.setProperty('--ns', ns + 'px');
-    const cols = n <= 8 ? 4 : n <= 12 ? 5 : 6, rows = n <= 8 ? 3 : 4;
-    const cells = shuffle(Array.from({ length: cols * rows }, (_, i) => i)).slice(0, n);
-    self.nodes = [];
-    for (let i = 0; i < n; i++) {
-      const c = cells[i]; const cx = ((c % cols) + 0.5) / cols, cy = (Math.floor(c / cols) + 0.5) / rows;
-      const x = cx * 100 + (Math.random() - .5) * (60 / cols), y = cy * 100 + (Math.random() - .5) * (60 / rows);
-      const d = el('div', 'node' + (i === 0 ? ' next' : ''), i + 1); d.style.left = x + '%'; d.style.top = y + '%'; d.dataset.v = i + 1;
-      d.addEventListener('pointerdown', e => { e.preventDefault(); self.tap(+d.dataset.v, d); });
-      arena.appendChild(d); self.nodes.push({ v: i + 1, x, y, el: d });
-    }
+    w.appendChild(el('div', 'hud', `<span>下一個：<b id="sNext">1</b></span><span class="time"><b id="sTime">0.0</b> 秒</span>`));
+    const g = el('div', 'schulte'); g.style.gridTemplateColumns = `repeat(${size},minmax(0,1fr))`;
+    g.style.setProperty('--fs', `calc(min(92vw, 900px, var(--stage-h) - 140px) / ${size} * 0.5)`);
+    const nums = shuffle(Array.from({ length: n }, (_, i) => i + 1)); self.cells = [];
+    nums.forEach(v => { const c = el('div', 'sc', v); c.dataset.v = v; c.addEventListener('pointerdown', e => { e.preventDefault(); self.tap(v, c); }); g.appendChild(c); self.cells.push(c); });
+    w.appendChild(g); st.appendChild(w);
+    const b = $('#btnTime'); if (b) b.textContent = '▶︎ 開始計時';
   },
-  stop() { clearInterval(this.timer); },
-  tap(v, d) {
-    if (this.next > this.nodes.length) return;
-    if (v !== this.next) { d.classList.add('wrong'); beep(220, .2, 'square'); setTimeout(() => d.classList.remove('wrong'), 350); return; }
-    if (v === 1) { this.t0 = performance.now(); this.timer = setInterval(() => { const t = $('#tTime'); if (t) t.textContent = ((performance.now() - this.t0) / 1000).toFixed(1); }, 100); }
-    d.classList.remove('next'); d.classList.add('done'); beep(700 + v * 40, .1);
-    if (v > 1) { const p = this.nodes[v - 2], q = this.nodes[v - 1]; const svg = $('#tLines'); const ln = document.createElementNS('http://www.w3.org/2000/svg', 'line'); ln.setAttribute('x1', p.x + '%'); ln.setAttribute('y1', p.y + '%'); ln.setAttribute('x2', q.x + '%'); ln.setAttribute('y2', q.y + '%'); ln.setAttribute('stroke', '#17B169'); ln.setAttribute('stroke-width', '6'); ln.setAttribute('stroke-linecap', 'round'); svg.appendChild(ln); }
-    this.next++;
-    if (this.next <= this.nodes.length) { $('#tNext').textContent = this.next; this.nodes[this.next - 1].el.classList.add('next'); }
-    else { clearInterval(this.timer); const sec = ((performance.now() - this.t0) / 1000).toFixed(1); $('#tTime').textContent = sec; $('#tNext').textContent = '完成！'; beep(1046, .3); const a = el('div', 'answer', `全部連完了！${sec} 秒<span class="exp">眼睛找、手去點，一起完成。按「再來一次」換下一位。</span>`); a.style.cssText = 'position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); z-index:5; width:max-content; max-width:90%'; $('.trailarena').appendChild(a); }
+  stop() { clearInterval(this.timer); this.timer = null; this.running = false; },
+  startTimer() {
+    if (this.running) return; this.running = true; this.t0 = performance.now();
+    this.timer = setInterval(() => { const t = $('#sTime'); if (t) t.textContent = ((performance.now() - this.t0) / 1000).toFixed(1); }, 100);
+    const b = $('#btnTime'); if (b) b.textContent = '停止計時';
+  },
+  toggle() { if (this.running) { this.stop(); const b = $('#btnTime'); if (b) b.textContent = '▶︎ 開始計時'; } else this.startTimer(); },
+  tap(v, c) {
+    if (this.next > this.n) return;
+    if (v !== this.next) { c.classList.add('wrong'); beep(220, .2, 'square'); setTimeout(() => c.classList.remove('wrong'), 350); return; }
+    if (v === 1) this.startTimer();
+    c.classList.add('done'); beep(700 + v * 30, .1); this.next++;
+    if (this.next <= this.n) { $('#sNext').textContent = this.next; }
+    else { const sec = ((performance.now() - this.t0) / 1000).toFixed(1); this.stop(); const bt = $('#btnTime'); if (bt) bt.textContent = '▶︎ 開始計時'; $('#sTime').textContent = sec; $('#sNext').textContent = '完成！'; beep(1046, .3); const a = el('div', 'answer', `全部找完了！${sec} 秒<span class="exp">眼睛掃整張表、大家一起唸，就是視覺搜尋與專注力訓練。按「再來一次」換一張表。</span>`); a.style.marginTop = '12px'; $('#stage .exwrap').appendChild(a); }
   },
   onOpt() { this.stop(); const st = $('#stage'); st.innerHTML = ''; this.start(st); },
   extraCtrl() {
-    const self = this; const again = el('button', 'cbtn primary', '再來一次'); again.onclick = () => { self.stop(); const st = $('#stage'); st.innerHTML = ''; self.start(st); };
-    return [again];
+    const self = this;
+    const t = el('button', 'cbtn primary', '▶︎ 開始計時'); t.id = 'btnTime'; t.onclick = () => self.toggle();
+    const again = el('button', 'cbtn brand', '再來一次'); again.onclick = () => { self.stop(); const st = $('#stage'); st.innerHTML = ''; self.start(st); };
+    return [t, again];
   }
 };
 
@@ -1015,7 +1003,7 @@ MODES.exercise = {
 const CATS = [
   { cls: 'c-eye', tag: '眼', name: '視力・護眼', desc: '眼睛本身看得清不清楚、常見眼疾與日常護眼。', modes: ['gap', 'amsler', 'disease', 'illusion', 'quiz', 'exercise'] },
   { cls: 'c-per', tag: '腦', name: '視知覺', desc: '眼睛看到之後，大腦怎麼分辨、比較、追蹤。', modes: ['odd', 'stroop', 'count', 'cups'] },
-  { cls: 'c-hand', tag: '手', name: '手眼協調', desc: '看到、判斷位置、再動手點。觸控螢幕或平板最好玩。', modes: ['bubbles', 'trail'] }
+  { cls: 'c-react', tag: '快', name: '視覺反應', desc: '目標閃一下在哪裡？數字藏在哪裡？全班一起找、一起喊，練反應與專注。', modes: ['flash', 'schulte'] }
 ];
 
 /* =====================================================================
@@ -1092,7 +1080,7 @@ function reveal() { if (!cur || MODES[cur].free || revealed) return; revealed = 
 
 $('#btnHome').onclick = goHome; $('#btnNext').onclick = nextQ; $('#btnPrev').onclick = prevQ; $('#btnReveal').onclick = reveal;
 $('#btnFull').onclick = () => { if (document.fullscreenElement) document.exitFullscreen(); else document.documentElement.requestFullscreen && document.documentElement.requestFullscreen(); };
-$('#btnGuide').onclick = () => { const g = $('#guide'); g.classList.toggle('open'); $('#btnGuide').classList.toggle('active', g.classList.contains('open')); if (!cur) { $('#guideTitle').textContent = '老師小抄'; $('#guideBody').innerHTML = '<ol><li>先選一個玩法，這裡會出現該玩法的帶領步驟與說法。</li><li>建議順序：眼球操暖身 → 找不一樣的字 → 說出顏色 → 數一數 → 杯子追蹤 → 視錯覺 → 看出去的樣子 → 方格表檢查 → 護眼問答 → 缺口比一比；戳泡泡、數字連連看適合分桌輪流到平板或觸控螢幕上玩。</li><li>每個玩法 5～10 分鐘，中間讓大家閉眼休息一下。</li></ol>'; } };
+$('#btnGuide').onclick = () => { const g = $('#guide'); g.classList.toggle('open'); $('#btnGuide').classList.toggle('active', g.classList.contains('open')); if (!cur) { $('#guideTitle').textContent = '老師小抄'; $('#guideBody').innerHTML = '<ol><li>先選一個玩法，這裡會出現該玩法的帶領步驟與說法。</li><li>建議順序：眼球操暖身 → 找不一樣的字 → 說出顏色 → 數一數 → 眼明手快 → 杯子追蹤 → 數字搜尋 → 視錯覺 → 看出去的樣子 → 方格表檢查 → 護眼問答 → 缺口比一比。</li><li>每個玩法 5～10 分鐘，中間讓大家閉眼休息一下。</li></ol>'; } };
 
 /* ---------- 計分板 ---------- */
 let scores = [];
