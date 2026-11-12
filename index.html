@@ -223,22 +223,21 @@ main{flex:1; display:flex; flex-direction:column; min-height:0}
 .hud span{border:var(--b2); border-radius:999px; padding:4px 18px; background:#fff; box-shadow:var(--sh3)}
 .hud span.time{background:var(--yellow)}
 
-/* ---------- mode: schulte ---------- */
-.schulte{display:grid; gap:min(1vw,10px); width:min(92vw, 900px, calc(var(--stage-h) - 140px)); aspect-ratio:1}
-.schulte .sc{background:#fff; border:var(--b2); border-radius:12px; box-shadow:var(--sh3); display:grid; place-items:center; font-weight:900; font-size:var(--fs); cursor:pointer; user-select:none; touch-action:manipulation; line-height:1}
-.schulte .sc:hover{background:var(--yellow-soft)}
-.schulte .sc.done{background:var(--green); color:#fff}
-.schulte .sc.wrong{animation:shake .3s; background:var(--red); color:#fff}
-.schulte .sc.pending{background:var(--yellow); animation:pulse .9s infinite}
-.schulte .sc.own{color:#fff}
-.teambar{display:flex; flex-wrap:wrap; gap:8px; justify-content:center; align-items:center; margin:0 0 10px}
-.teambar .ask{font-weight:900; font-size:18px; color:var(--orange); width:100%; text-align:center; min-height:1.4em}
-.tchip{display:inline-flex; align-items:center; gap:8px; border:var(--b2); border-radius:999px; padding:5px 14px; font-weight:900; font-size:18px; color:#fff; box-shadow:var(--sh3)}
-.tchip i{font-style:normal; background:#fff; color:var(--ink); border-radius:999px; min-width:1.7em; padding:0 6px; text-align:center}
-.tchip.none{background:#fff; color:var(--grey)}
-.tchip.turn{outline:4px solid var(--ink); outline-offset:3px}
-.teambar.asking .tchip{animation:pulse .9s infinite}
-@keyframes pulse{50%{transform:scale(1.07)}}
+/* ---------- mode: lights（紅綠燈拍拍手） ---------- */
+.lightwrap{display:flex; flex-direction:column; align-items:center; gap:12px; width:100%}
+.rules{display:flex; gap:12px; flex-wrap:wrap; justify-content:center}
+.rule{display:flex; align-items:center; gap:10px; background:#fff; border:var(--b3); border-radius:999px; padding:5px 18px 5px 7px; font-weight:900; font-size:clamp(18px,2.1vw,27px); box-shadow:var(--sh3)}
+.rule i{width:clamp(28px,3vw,40px); aspect-ratio:1; border-radius:50%; border:var(--b3)}
+.lamp{--ls:min(56vw, calc(var(--stage-h) - 230px)); position:relative; width:var(--ls); aspect-ratio:1; border-radius:50%; border:8px solid var(--ink); background:#D9D6CC; box-shadow:var(--sh7); display:grid; place-items:center}
+.lamp b{font-weight:900; font-size:calc(var(--ls) * .3); line-height:1; color:#fff; -webkit-text-stroke:3px var(--ink); paint-order:stroke}
+.lamp.g{background:#17B169; box-shadow:0 0 0 14px rgba(23,177,105,.3), var(--sh7)}
+.lamp.y{background:#F6ED00; box-shadow:0 0 0 14px rgba(246,237,0,.35), var(--sh7)}
+.lamp.r{background:#E5322D; box-shadow:0 0 0 14px rgba(229,50,45,.3), var(--sh7)}
+.lamp.cd b{color:var(--ink); -webkit-text-stroke:0}
+.lamp.done{background:var(--yellow)}
+.lamp.done b{font-size:calc(var(--ls) * .17); color:var(--ink); -webkit-text-stroke:0}
+.lhint{font-weight:900; font-size:clamp(26px,3.4vw,46px); min-height:1.3em; line-height:1.3}
+.lstat{font-weight:900; font-size:clamp(18px,2vw,24px); color:var(--grey)}
 
 /* ---------- mode: exercise ---------- */
 .exwrap{position:relative; width:100%; min-height:calc(var(--stage-h) - 24px); display:flex; flex-direction:column; align-items:center}
@@ -358,7 +357,7 @@ const el = (tag, cls, html) => { const e = document.createElement(tag); if (cls)
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 
 /* ---------- settings (remembered in this browser) ---------- */
-const DEFAULTS = { odd: { level: 2 }, stroop: { n: 1, auto: 0 }, gap: { type: 'C', dirs: 4 }, amsler: { mode: 'steps' }, disease: { level: 2 }, quiz: { type: 'all' }, count: { n: 16 }, exercise: { speed: 1 }, illusion: {}, cups: { n: 3, speed: 1 }, flash: { size: 3, dur: 1, cnt: 1 }, schulte: { size: 3, mode: 'all' }, teams: 4 };
+const DEFAULTS = { odd: { level: 2 }, stroop: { n: 1, auto: 0 }, gap: { type: 'C', dirs: 4 }, amsler: { mode: 'steps' }, disease: { level: 2 }, quiz: { type: 'all' }, count: { n: 16 }, exercise: { speed: 1 }, illusion: {}, cups: { n: 3, speed: 1 }, flash: { size: 3, dur: 1, cnt: 1 }, lights: { lv: 2, speed: 1, n: 20, hint: 1 }, teams: 4 };
 let S;
 try { S = Object.assign({}, DEFAULTS, JSON.parse(localStorage.getItem('eyegame-settings') || '{}')); } catch (e) { S = Object.assign({}, DEFAULTS); }
 for (const k in DEFAULTS) if (typeof DEFAULTS[k] === 'object') S[k] = Object.assign({}, DEFAULTS[k], S[k] || {});
@@ -489,7 +488,7 @@ const ICONS = {
   count: '<circle cx="14" cy="16" r="7"/><path d="M27 23l7-12 7 12z"/><rect x="18" y="29" width="13" height="13"/>',
   cups: '<path d="M12 12h22l-3 24H15z"/><path d="M9 9h28"/><circle cx="38" cy="40" r="4"/>',
   flash: '<path d="M27 5 11 27h11l-2 16 16-22H25z"/>',
-  schulte: '<rect x="6" y="6" width="26" height="26"/><path d="M6 19h26M19 6v26"/><circle cx="35" cy="35" r="6"/><path d="M39.5 39.5 45 45"/>'
+  lights: '<rect x="14" y="3" width="20" height="42" rx="7"/><circle cx="24" cy="13" r="4.5"/><circle cx="24" cy="24" r="4.5"/><circle cx="24" cy="35" r="4.5"/>'
 };
 const icon = id => `<svg class="ic" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONS[id] || ''}</svg>`;
 document.querySelectorAll('[data-ico]').forEach(e => e.insertAdjacentHTML('afterbegin', icon(e.dataset.ico)));
@@ -915,85 +914,63 @@ MODES.flash = {
   }
 };
 
-/* ---------- 數字搜尋（舒爾特方格）：全班計時／分桌搶答／分桌接力 ---------- */
-const TEAM_COLORS = ['#F15A29', '#2F6FED', '#17B169', '#7C3AED', '#C99A00', '#E5322D'];
-MODES.schulte = {
-  name: '數字搜尋', desc: '打亂的數字表，從 1 依序找出來。可以全班計時，也可以分桌搶答、分桌接力，老師一個人操作。',
+/* ---------- 紅綠燈拍拍手（視覺反應＋抑制控制）：畫面自己跑，全班同時做動作 ---------- */
+const LIGHTS = { g: { name: '綠燈', act: '拍手！', color: '#17B169' }, y: { name: '黃燈', act: '舉手！', color: '#F6ED00' }, r: { name: '紅燈', act: '不動！', color: '#E5322D' } };
+MODES.lights = {
+  name: '紅綠燈拍拍手', desc: '綠燈拍手、黃燈舉手、紅燈不動！畫面自己跑，全班一起做，看誰不會被騙。',
   free: true,
-  opts: [{ key: 'size', label: '格數', values: [[3, '3×3'], [4, '4×4'], [5, '5×5']] }, { key: 'mode', label: '玩法', values: [['all', '全班計時'], ['race', '分桌搶答'], ['relay', '分桌接力']] }],
-  guide: ['<b>全班計時：</b>全班一起從 1 找起，找到就大聲唸並說位置（左上、中間…），老師依序點格子；點到 1 開始計時，唸完顯示總秒數，可以挑戰打破紀錄。', '<b>分桌搶答：</b>畫面上方顯示「下一個」數字，哪一桌先喊出位置，老師先點那一格、再點那一桌的名字，格子會塗上該桌顏色並自動加分（同步到右上角計分板）。沒人找到就點「跳過」。', '<b>分桌接力：</b>各桌輪流找下一個數字，畫面會標示「輪到哪一桌」並計時；老師點對格子後自動換下一桌。全部找完，平均最快的桌獲勝並加 1 分。', '桌數與桌名沿用右上角「計分」的設定，開始前可先改好桌名。', '提醒大家「頭不動、眼睛動」，用眼睛掃整張表，這是視覺搜尋與專注力訓練。延伸：藥盒、月曆、公車時刻表都是一堆數字，練習「找得到、看得準」很實用。'],
-  next: 1, t0: 0, timer: null, running: false, cells: [], n: 0, pending: null, turn: 0, tTurn: 0, tf: [], tt: [],
-  teams() { buildTeams(); return scores.slice(0, S.teams).map((t, i) => ({ name: t.name, color: TEAM_COLORS[i % TEAM_COLORS.length], i })); },
+  opts: [{ key: 'lv', label: '燈號', values: [[1, '紅綠'], [2, '紅黃綠'], [3, '加干擾字']] }, { key: 'speed', label: '速度', values: [[0.75, '慢'], [1, '中'], [1.4, '快']] }, { key: 'n', label: '次數', values: [[10, '10'], [20, '20'], [30, '30']] }, { key: 'hint', label: '提示字', values: [[1, '開'], [0, '關']] }],
+  guide: ['說明規則（畫面上方有）：「看到<b>綠燈拍一下手</b>、<b>黃燈舉一隻手</b>、<b>紅燈雙手放膝蓋不動</b>。坐著做就可以。」', '按「開始」後會倒數 3、2、1，接著燈號自己一個一個亮，老師不用操作，可以專心看大家、一起做動作。', '第一輪開「提示字」、慢速、紅綠兩色；熟悉後關掉提示字、加入黃燈、加快速度。', '「加干擾字」：燈裡會寫一個顏色的字（例如紅燈裡寫「綠」），要看<b>燈的顏色</b>、不是字，和「說出顏色」是同一個道理，最容易笑成一團。', '團體玩法：分桌比賽，每桌請一位當「小裁判」看隔壁桌有沒有人做錯，最少人做錯的桌在計分板加 1 分；做錯的人笑一笑就好。', '這是視覺反應與「忍住不動」的訓練（抑制控制），跟過馬路看紅綠燈一樣重要。肩膀不舒服的長輩可以改成點頭或拍腿。'],
+  token: 0, running: false,
   start(st) {
-    const self = this; self.stop(); self.next = 1; self.t0 = 0; self.pending = null; self.turn = 0;
-    const size = S.schulte.size, n = size * size, mode = S.schulte.mode; self.n = n; self.mode = mode;
-    const T = mode === 'all' ? [] : self.teams(); self.T = T; self.tf = T.map(() => 0); self.tt = T.map(() => 0);
-    const w = el('div', 'exwrap'); w.style.minHeight = '0';
-    const hud = mode === 'relay' ? `<span>下一個：<b id="sNext">1</b></span><span>輪到：<b id="sTurn"></b></span><span class="time"><b id="sTime">0.0</b> 秒</span>`
-      : mode === 'race' ? `<span>下一個：<b id="sNext">1</b></span><span class="time">誰先找到？</span>`
-      : `<span>下一個：<b id="sNext">1</b></span><span class="time"><b id="sTime">0.0</b> 秒</span>`;
-    w.appendChild(el('div', 'hud', hud));
-    if (mode !== 'all') {
-      const bar = el('div', 'teambar'); bar.id = 'teambar';
-      T.forEach(t => { const b = el('button', 'tchip', `${t.name}<i>0</i>`); b.style.background = t.color; b.dataset.i = t.i; b.onclick = () => self.award(t.i); bar.appendChild(b); });
-      if (mode === 'race') { const sk = el('button', 'tchip none', '跳過'); sk.onclick = () => self.award(-1); bar.appendChild(sk); }
-      bar.appendChild(el('div', 'ask', mode === 'race' ? '老師：先點找到的格子，再點先喊出來的那一桌' : '老師：點對格子，就換下一桌'));
-      w.appendChild(bar);
+    this.stop();
+    const lv = S.lights.lv, w = el('div', 'lightwrap'); const keys = lv === 1 ? ['g', 'r'] : ['g', 'y', 'r'];
+    const rules = el('div', 'rules'); keys.forEach(k => rules.appendChild(el('span', 'rule', `<i style="background:${LIGHTS[k].color}"></i>${LIGHTS[k].name}${LIGHTS[k].act.replace('！', '')}`)));
+    w.appendChild(rules);
+    w.appendChild(el('div', 'lamp', '<b></b>'));
+    w.appendChild(el('div', 'lhint', lv === 3 ? '看燈的顏色，不要看字！' : '按「開始」，大家準備好…'));
+    w.appendChild(el('div', 'lstat', `共 ${S.lights.n} 個燈號`));
+    st.appendChild(w);
+    const p = $('#btnPlay'); if (p) p.textContent = '▶︎ 開始';
+  },
+  stop() { this.token++; this.running = false; },
+  seq() {
+    const lv = S.lights.lv, n = S.lights.n, keys = lv === 1 ? ['g', 'r'] : ['g', 'y', 'r'], wt = lv === 1 ? { g: .6, r: .4 } : { g: .45, y: .25, r: .3 };
+    const out = [];
+    while (out.length < n) {
+      let x = Math.random(), k = keys[keys.length - 1]; for (const kk of keys) { if (x < wt[kk]) { k = kk; break; } x -= wt[kk]; }
+      if (out.length >= 2 && out[out.length - 1] === k && out[out.length - 2] === k) continue; // 不連續出現 3 次
+      out.push(k);
     }
-    const g = el('div', 'schulte'); g.style.gridTemplateColumns = `repeat(${size},minmax(0,1fr))`;
-    const reserve = mode === 'all' ? 140 : 230;
-    g.style.width = `min(92vw, 900px, calc(var(--stage-h) - ${reserve}px))`;
-    g.style.setProperty('--fs', `calc(min(92vw, 900px, var(--stage-h) - ${reserve}px) / ${size} * 0.5)`);
-    const nums = shuffle(Array.from({ length: n }, (_, i) => i + 1)); self.cells = [];
-    nums.forEach(v => { const c = el('div', 'sc', v); c.dataset.v = v; c.addEventListener('pointerdown', e => { e.preventDefault(); self.tap(v, c); }); g.appendChild(c); self.cells.push(c); });
-    w.appendChild(g); st.appendChild(w);
-    const b = $('#btnTime'); if (b) { b.textContent = '▶︎ 開始計時'; b.classList.toggle('hidden', mode === 'race'); }
-    self.showTurn();
+    return out;
   },
-  showTurn() { if (this.mode !== 'relay') return; const t = this.T[this.turn]; $('#sTurn').textContent = t.name; $('#sTurn').style.color = t.color; document.querySelectorAll('#teambar .tchip').forEach(c => c.classList.toggle('turn', +c.dataset.i === this.turn)); },
-  stop() { clearInterval(this.timer); this.timer = null; this.running = false; },
-  startTimer() {
-    if (this.running) return; this.running = true; this.t0 = performance.now(); this.tTurn = this.t0;
-    this.timer = setInterval(() => { const t = $('#sTime'); if (!t) return; const ref = this.mode === 'relay' ? this.tTurn : this.t0; t.textContent = ((performance.now() - ref) / 1000).toFixed(1); }, 100);
-    const b = $('#btnTime'); if (b) b.textContent = '停止計時';
-  },
-  toggle() { if (this.mode === 'race') return; if (this.running) { this.stop(); const b = $('#btnTime'); if (b) b.textContent = '▶︎ 開始計時'; } else this.startTimer(); },
-  paint(c, ti) { const t = this.T[ti]; c.classList.remove('pending'); c.classList.add('own'); c.style.background = t.color; },
-  tap(v, c) {
-    if (this.next > this.n || this.pending) return;
-    if (v !== this.next) { c.classList.add('wrong'); beep(220, .2, 'square'); setTimeout(() => c.classList.remove('wrong'), 350); return; }
-    if (this.mode === 'race') { this.pending = c; c.classList.add('pending'); $('#teambar').classList.add('asking'); beep(880, .08); return; }
-    if (v === 1) this.startTimer();
-    if (this.mode === 'relay') {
-      const now = performance.now(); this.tt[this.turn] += (now - this.tTurn) / 1000; this.tf[this.turn]++; this.paint(c, this.turn);
-      document.querySelector(`#teambar .tchip[data-i="${this.turn}"] i`).textContent = this.tf[this.turn];
-      this.turn = (this.turn + 1) % this.T.length; this.tTurn = now; this.showTurn();
-    } else c.classList.add('done');
-    beep(700 + v * 25, .1); this.advance();
-  },
-  award(ti) {
-    if (!this.pending) return; const c = this.pending; this.pending = null; $('#teambar').classList.remove('asking');
-    if (ti < 0) { c.classList.remove('pending'); c.classList.add('done'); c.style.background = '#BDBDBD'; }
-    else { this.paint(c, ti); this.tf[ti]++; scores[ti].s++; buildTeams(); document.querySelector(`#teambar .tchip[data-i="${ti}"] i`).textContent = this.tf[ti]; beep(1175, .12); }
-    this.advance();
-  },
-  advance() {
-    this.next++;
-    if (this.next <= this.n) { $('#sNext').textContent = this.next; return; }
-    $('#sNext').textContent = '完成！'; beep(1046, .3);
-    let html;
-    if (this.mode === 'all') { const sec = ((performance.now() - this.t0) / 1000).toFixed(1); this.stop(); $('#sTime').textContent = sec; html = `全部找完了！${sec} 秒<span class="exp">眼睛掃整張表、大家一起唸，就是視覺搜尋與專注力訓練。按「再來一次」換一張表。</span>`; }
-    else if (this.mode === 'race') { const best = Math.max(...this.tf); const win = this.T.filter((t, i) => this.tf[i] === best).map(t => t.name).join('、'); html = `搶答結束！${win} 找到最多（${best} 個）<span class="exp">${this.T.map((t, i) => `${t.name} ${this.tf[i]} 個`).join('｜')}・分數已加進右上角計分板</span>`; }
-    else { this.stop(); const avg = this.T.map((t, i) => this.tf[i] ? this.tt[i] / this.tf[i] : Infinity); const best = Math.min(...avg); const wi = avg.indexOf(best); scores[wi].s++; buildTeams(); html = `接力結束！${this.T[wi].name} 平均最快（${best.toFixed(1)} 秒／個）<span class="exp">${this.T.map((t, i) => `${t.name} 平均 ${isFinite(avg[i]) ? avg[i].toFixed(1) : '—'} 秒`).join('｜')}・冠軍已加 1 分</span>`; }
-    const b = $('#btnTime'); if (b) b.textContent = '▶︎ 開始計時';
-    const a = el('div', 'answer', html); a.style.marginTop = '12px'; $('#stage .exwrap').appendChild(a); a.scrollIntoView({ block: 'nearest' });
+  async toggle() {
+    if (this.running) { this.stop(); $('#btnPlay').textContent = '▶︎ 重新開始'; $('.lhint').textContent = '已暫停'; return; }
+    this.running = true; const my = ++this.token; const alive = () => this.token === my;
+    const lamp = $('.lamp'), b = lamp.querySelector('b'), hint = $('.lhint'), stat = $('.lstat'); $('#btnPlay').textContent = '暫停';
+    const sp = S.lights.speed, lv = S.lights.lv, seq = this.seq(); const words = { g: '綠', y: '黃', r: '紅' };
+    lamp.className = 'lamp cd'; hint.textContent = '準備…';
+    for (const c of ['3', '2', '1']) { if (!alive()) return; b.textContent = c; beep(660, .12); await sleep(800); }
+    const tone = { g: 988, y: 784, r: 392 };
+    for (let i = 0; i < seq.length; i++) {
+      if (!alive()) return;
+      const k = seq[i]; lamp.className = 'lamp ' + k;
+      b.textContent = lv === 3 ? pick(Object.keys(words).filter(w => w !== k).map(w => words[w])) : '';
+      hint.textContent = S.lights.hint ? LIGHTS[k].act : ''; stat.textContent = `第 ${i + 1}／${seq.length} 個`;
+      beep(tone[k], .12);
+      await sleep(1600 / sp); if (!alive()) return;
+      lamp.className = 'lamp'; b.textContent = ''; hint.textContent = '';
+      await sleep(550 / sp);
+    }
+    if (!alive()) return;
+    this.running = false; lamp.className = 'lamp done'; b.textContent = '完成！'; hint.textContent = '做得很好！大家拍拍手';
+    stat.textContent = `共 ${seq.length} 個燈號：綠 ${seq.filter(k => k === 'g').length}・黃 ${seq.filter(k => k === 'y').length}・紅 ${seq.filter(k => k === 'r').length}`;
+    $('#btnPlay').textContent = '▶︎ 再玩一次'; beep(1046, .3);
   },
   onOpt() { this.stop(); const st = $('#stage'); st.innerHTML = ''; this.start(st); },
   extraCtrl() {
-    const self = this;
-    const t = el('button', 'cbtn primary', '▶︎ 開始計時'); t.id = 'btnTime'; t.onclick = () => self.toggle();
-    const again = el('button', 'cbtn brand', '再來一次'); again.onclick = () => { self.stop(); const st = $('#stage'); st.innerHTML = ''; self.start(st); };
-    return [t, again];
+    const self = this; const play = el('button', 'cbtn primary', '▶︎ 開始'); play.id = 'btnPlay'; play.onclick = () => self.toggle();
+    return [play];
   }
 };
 
@@ -1084,7 +1061,7 @@ MODES.exercise = {
 const CATS = [
   { cls: 'c-eye', tag: '眼', name: '視力・護眼', desc: '眼睛本身看得清不清楚、常見眼疾與日常護眼。', modes: ['gap', 'amsler', 'disease', 'illusion', 'quiz', 'exercise'] },
   { cls: 'c-per', tag: '腦', name: '視知覺', desc: '眼睛看到之後，大腦怎麼分辨、比較、追蹤。', modes: ['odd', 'stroop', 'count', 'cups'] },
-  { cls: 'c-react', tag: '快', name: '視覺反應', desc: '目標閃一下在哪裡？數字藏在哪裡？全班一起喊，也可以分桌搶答、接力。', modes: ['flash', 'schulte'] }
+  { cls: 'c-react', tag: '快', name: '視覺反應', desc: '目標閃一下在哪裡？燈號亮了做什麼動作？全班一起看、一起反應。', modes: ['flash', 'lights'] }
 ];
 
 /* =====================================================================
@@ -1168,7 +1145,7 @@ function reveal() { if (!cur || MODES[cur].free || revealed) return; revealed = 
 
 $('#btnHome').onclick = goHome; $('#btnNext').onclick = nextQ; $('#btnPrev').onclick = prevQ; $('#btnReveal').onclick = reveal;
 $('#btnFull').onclick = () => { if (document.fullscreenElement) document.exitFullscreen(); else document.documentElement.requestFullscreen && document.documentElement.requestFullscreen(); };
-$('#btnGuide').onclick = () => { const g = $('#guide'); g.classList.toggle('open'); $('#btnGuide').classList.toggle('active', g.classList.contains('open')); if (!cur) { $('#guideTitle').textContent = '老師小抄'; $('#guideBody').innerHTML = '<ol><li>先選一個玩法，這裡會出現該玩法的帶領步驟與說法。</li><li>建議順序：眼球操暖身 → 找不一樣的字 → 說出顏色 → 數一數 → 眼明手快 → 杯子追蹤 → 數字搜尋 → 視錯覺 → 看出去的樣子 → 方格表檢查 → 護眼問答 → 缺口比一比。</li><li>每個玩法 5～10 分鐘，中間讓大家閉眼休息一下。</li></ol>'; } };
+$('#btnGuide').onclick = () => { const g = $('#guide'); g.classList.toggle('open'); $('#btnGuide').classList.toggle('active', g.classList.contains('open')); if (!cur) { $('#guideTitle').textContent = '老師小抄'; $('#guideBody').innerHTML = '<ol><li>先選一個玩法，這裡會出現該玩法的帶領步驟與說法。</li><li>建議順序：眼球操暖身 → 找不一樣的字 → 說出顏色 → 數一數 → 眼明手快 → 杯子追蹤 → 紅綠燈拍拍手 → 視錯覺 → 看出去的樣子 → 方格表檢查 → 護眼問答 → 缺口比一比。</li><li>每個玩法 5～10 分鐘，中間讓大家閉眼休息一下。</li></ol>'; } };
 
 /* ---------- 計分板 ---------- */
 let scores = [];
